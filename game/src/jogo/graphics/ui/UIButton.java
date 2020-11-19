@@ -1,5 +1,8 @@
 package jogo.graphics.ui;
 
+import static jogo.util.StringtoPixels.getWidthStringPixels;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
@@ -35,6 +38,23 @@ public class UIButton extends UIComponent {
 		init();
 	}
 	
+
+	public UIButton(Vector2i position, Vector2i size, String title) {
+		super(position, size);
+		Vector2i lp = new Vector2i(position);
+		lp.x += 4;
+		lp.y += size.y - 2;
+		label = new UILabel(lp, title);
+		label.setColor(0x444444);
+		label.active = true;
+		init();
+	}
+	
+	public UIButton(Vector2i position , String title) {
+		this(position, new Vector2i(getWidthStringPixels(title, UIManager.DEFAULTFONT) + 20,50), title);
+		
+	}
+	
 	public UIButton(Vector2i position, BufferedImage image, UIActionListener actionListener) {
 		super(position, new Vector2i(image.getWidth(), image.getHeight()));
 		this.actionListener = actionListener;
@@ -68,6 +88,7 @@ public class UIButton extends UIComponent {
 			label.text = text;
 	}
 
+
 	public void performAction() {
 		actionListener.perform();
 	}
@@ -76,10 +97,17 @@ public class UIButton extends UIComponent {
 		ignoreAction = true;
 	}
 	
-
+	public void setDropShadow(Boolean b) {
+		label.setDropShadow(b);
+	}
+	
+	public void setActinoListener(UIActionListener actionListener) {
+		this.actionListener = actionListener;
+	}
 
 	public void update() {
 		Rectangle rect = new Rectangle(getAbsolutePosition().x, getAbsolutePosition().y, size.x, size.y);
+//		Logger.getGlobal().info(rec.toS);
 		boolean leftMouseButtonDown = Mouse.getButton() == MouseEvent.BUTTON1;
 		if (rect.contains(new Point(Mouse.getX(), Mouse.getY()))) {
 			if (!inside) {
@@ -98,8 +126,7 @@ public class UIButton extends UIComponent {
 				if (pressed) {
 					buttonListener.released(this);
 					if (!ignoreAction) {
-						
-						actionListener.perform();
+						if(actionListener != null) actionListener.perform();
 					}
 					else
 						ignoreAction = false;
@@ -129,6 +156,11 @@ public class UIButton extends UIComponent {
 			if (label != null)
 				label.render(g);
 		}
+	}
+
+
+	public void setForegroundColor(Color color) {
+		label.setForegroundColor(color);	
 	}
 
 }

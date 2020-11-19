@@ -137,7 +137,7 @@ public abstract class Mob extends Entity {
 		}
 	}
 
-	private int abs(double value) {
+	public int abs(double value) {
 		if (value < 0)
 			return -1;
 		return 1;

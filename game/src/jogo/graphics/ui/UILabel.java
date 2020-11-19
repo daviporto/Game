@@ -12,12 +12,16 @@ public class UILabel extends UIComponent {
 	private Font font;
 	public boolean dropShadow = false;
 	public int dropShadowOffset = 2;
+	protected Color foregroundColor;
+	
+	private final static Color DEFAULTFOREGROUNDCOLOR = Color.BLACK;
 
 	public UILabel(Vector2i position, String text) {
 		super(position);
 		font = new Font("Helvetica", Font.PLAIN, 32);
 		this.text = text;
 		color = new Color(0xff00ff);
+		foregroundColor = DEFAULTFOREGROUNDCOLOR;
 	}
 	
 
@@ -25,8 +29,23 @@ public class UILabel extends UIComponent {
 		this.font = font;
 		return this;
 	}
+	
+	public Font getFont() {
+		return font;
+	}
+	
+	
+	public void setForegroundColor(Color color) {
+		foregroundColor = color;
+	}
+
+	
 	public void update(String text) {
 		this.text = text;
+	}
+	
+	public void setDropShadow(boolean b) {
+		dropShadow = b;
 	}
 
 	public void render(Graphics g) {
@@ -36,7 +55,7 @@ public class UILabel extends UIComponent {
 			g.drawString(text, position.x + offset.x + dropShadowOffset, position.y + offset.y + dropShadowOffset);
 		}
 
-		g.setColor(color);
+		g.setColor(foregroundColor);
 		g.setFont(font);
 		g.drawString(text, position.x + offset.x, position.y + offset.y);
 	}

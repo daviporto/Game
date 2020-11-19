@@ -19,7 +19,7 @@ import jogo.util.Vector2i;
 public class PlayerAbilities {
 	// 40 200 
 	private int time = 0;
-	private  UIManager ui = Game.getUIManager();
+	private  UIManager ui;
 	private final  int sizeX = 220;
 	private final  int sizeY = 50;
 	private  Color color = new Color(0x4f4f40);
@@ -46,6 +46,7 @@ public class PlayerAbilities {
 	
 	public PlayerAbilities(Player player) {
 		this.player = player;
+		ui = player.getUIManager();
 		catchImages();
 		for(int i = 0; i < HOWMUCHABILITIES; i++) {
 			currentLevelAbilities[i] = 0;
@@ -131,7 +132,7 @@ public class PlayerAbilities {
 			}
 			
 			public void pressed(UIButton button) {
-//				button.setImage(ImageUtils.changeBrightness(fireAbilityImage[0], 50));
+				button.setImage(ImageUtils.changeBrightness(fireAbilityImage[0], 50));
 				
 			}
 			

@@ -1,5 +1,6 @@
 package jogo.graphics.ui;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ public class UIManager {
 	private List<UITextandNext> texts = new ArrayList<UITextandNext>();	
 	private List<UIPanel> panels = new ArrayList<UIPanel>();	
 	private boolean blockShooting = false;
+	
+	public static Font DEFAULTFONT =  new Font("Helvetica", Font.PLAIN, 32);
 
 	public UIManager() {
 		

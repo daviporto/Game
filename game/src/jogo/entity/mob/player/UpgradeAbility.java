@@ -1,13 +1,9 @@
 package jogo.entity.mob.player;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import jogo.Game;
-import jogo.entity.mob.Player;
 import jogo.graphics.ui.UIActionListener;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UIManager;
@@ -29,7 +25,8 @@ public class UpgradeAbility {
 	private static final int PANELSIZEX = 500;
 	private static final int PANELSIZEY = 150;
 	
-	public UpgradeAbility() {
+	public UpgradeAbility(UIManager ui) {
+		ui = this.ui;
 		currentLevelAbilities = new int[3];
 		currentLevelAbilities[0] = currentLevelAbilities[1] = currentLevelAbilities[2] = 0;
 		
@@ -72,7 +69,6 @@ public class UpgradeAbility {
 		UPAbilitiesPanel.addComponent(FireAbilityButton);
 		UPAbilitiesPanel.addComponent(iceAbilityButton);
 		UPAbilitiesPanel.addComponent(poisonAbilityButton);
-		ui = Game.getUIManager();
 	}
 	
 	public void  upgrade() {

@@ -43,12 +43,12 @@ public class PlayerNextLevelChoice {
 	}
 	
 	
-	public PlayerNextLevelChoice() {
+	public PlayerNextLevelChoice(UIManager ui) {
 		Vector2i LabelPositionn= new Vector2i(positionX ,positionY);
 		Vector2i Labelsize= new Vector2i(sizeX, sizeY);
 		panel_Player_stats = (UIPanel) new UIPanel(LabelPositionn, Labelsize);
 		panel_Player_stats.setColor(0x4f4f4f);
-		ui = Game.getUIManager();
+		this.ui = ui;
 		constructPanel();
 	}
 	

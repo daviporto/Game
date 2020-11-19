@@ -96,13 +96,13 @@ public class Player extends Mob implements EventListener {
 
 	}
 
-	public Player(String name, int x, int y, Keyboard imput, MessageEventsManager messageManager) {
+	public Player(String name, int x, int y, Keyboard imput, MessageEventsManager messageManager, UIManager ui) {
 		this.messageManager = messageManager;
 		this.name = name;
 		this.x = x;
 		this.y = y;
 		this.imput = imput;
-
+	
 		// Player default attributes
 		health = maxMana = currentMana = MaxHelath = 100;
 		PLayerLevel = xp = 0;
@@ -110,7 +110,7 @@ public class Player extends Mob implements EventListener {
 		lifeRecoverPerSecond = manaRecoverPerSecond = 1;
 		maxMana = currentMana = 100;
 
-		ui = Game.getUIManager();
+		this.ui = ui;
 		ui.addPanel(panel);
 		UILabel nameLabel = new UILabel(new Vector2i(40, 30), name);
 		nameLabel.setColor(0xbbbbbb);
@@ -211,10 +211,10 @@ public class Player extends Mob implements EventListener {
 		updateMana();
 		updateLevel();
 
-		playerNextLevelChoice = new PlayerNextLevelChoice();
+		playerNextLevelChoice = new PlayerNextLevelChoice(ui);
 		playerAbilities = new PlayerAbilities(this);
 		playerAbilities.drawHablities();
-		upgradeAbility = new UpgradeAbility();
+		upgradeAbility = new UpgradeAbility(ui);
 	}
 
 	public String getNmae() {
@@ -529,5 +529,9 @@ public class Player extends Mob implements EventListener {
 								"abilidades tem efeitos especial a de gelo diminui a velocidade"
 										+ ",a de fogo da dano com o tempo, a de venono diminui o dano do oponente",
 								18)));
+	}
+
+	public UIManager getUIManager() {
+		return ui;
 	}
 }

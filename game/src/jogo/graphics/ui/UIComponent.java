@@ -14,9 +14,22 @@ public class UIComponent {
 	
 	public boolean active = true;
 	
+	protected UIComponent() {
+		offset = new Vector2i();
+		
+	}
+	
 	public UIComponent(Vector2i position) {
 		this.position = position;
 		offset = new Vector2i();
+	}
+	
+	public void setPosition(Vector2i position) {
+		this.position = position;
+	}
+	
+	public void setSize(Vector2i size) {
+		this.size = size;
 	}
 	
 	public UIComponent(Vector2i position, Vector2i size) {
@@ -32,6 +45,10 @@ public class UIComponent {
 	public UIComponent setColor(int color) {
 		this.color = new Color(color);
 		return this;
+	}
+	
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	public void update() {

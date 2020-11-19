@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.UnsupportedLookAndFeelException;
 
-import components.dataBase.DSDataBase;
 import jogo.entity.mob.Player;
 import jogo.events.Event;
 import jogo.events.messageEvents.MessageEventsManager;
@@ -25,13 +23,16 @@ import jogo.input.Keyboard;
 import jogo.input.Mouse;
 import jogo.level.Level;
 import jogo.level.TileCoordinate;
+import menu.MenuController;
 
 public class Game extends Canvas implements Runnable, jogo.events.EventListener {
 	private static final long serialVersionUID = 1L;
 	private static int width = 280;
 	private static int height = 168;
 	private static int scale = 3;
+	public static final Color RecColor = new Color(0xff00ff);
 	public static String title = "2d";
+	private boolean pause = true;
 
 	private int time;
 
@@ -41,7 +42,8 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private Level level;
 	private Player player;
 	private MessageEventsManager messageManager;
-	private static UIManager uiManager;
+	private UIManager uiManager;
+	private MenuController menuController;
 	private boolean running = false;
 	public static int FPS = 60;
 
@@ -55,26 +57,39 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	public Game() {
 		Dimension size = new Dimension(width * scale + 240, height * scale);
 		setPreferredSize(size);
+
 		screen = new Screen(width, height, pixels);
 		uiManager = new UIManager();
 		key = new Keyboard(this);
 		frame = new JFrame();
 		level = Level.teste;
+		level.setUIManeger(uiManager);
 		addLayer(level);
 		TileCoordinate playerSpawn = new TileCoordinate(16, 16);
-		player = new Player("Davi", playerSpawn.x(), playerSpawn.y(), key, messageManager);
+		player = new Player("Davi", playerSpawn.x(), playerSpawn.y(), key, messageManager, uiManager);
 		level.add(player);
 		font = new Font();
 		addKeyListener(key);
 		messageManager = new MessageEventsManager(player, uiManager);
 		level.addMessageManager(messageManager);
 		level.addLocationTrigerredEvents();
+		menuController = new MenuController(this);
 
 		Mouse mouse = new Mouse(this);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
 
 		player.AddLevelTrigered(messageManager);
+
+		frame.setResizable(false);
+		frame.setTitle("first");
+		frame.add(this);
+		frame.pack();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		messageManager.newLevel(0);// add events triggered at level 0
+		start();
 	}
 
 	public static int getwindoewidth() {
@@ -85,7 +100,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		return height * scale;
 	}
 
-	public static UIManager getUIManager() {
+	public UIManager getUIManager() {
 		return uiManager;
 	}
 
@@ -94,9 +109,9 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	}
 
 	public synchronized void start() {
-		DSDataBase db = level.save();
-		db.serializeToFile("save");
-		db.enableDebbug();
+//		DSDataBase db = level.save();
+//		db.serializeToFile("save");
+//		db.enableDebbug();
 		running = true;
 		thread = new Thread(this, "Display");
 		thread.start();
@@ -150,20 +165,26 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	}
 
 	private void update() {
-		if (time > 0)
-			time--;
 		key.update();
-		uiManager.update();
 
-		// Update layers here
-		for (int i = 0; i < layerStack.size(); i++) {
-			layerStack.get(i).update();
-		}
+		if (!pause) {
+			if (time > 0)
+				time--;
+			
+			uiManager.update();
+			// Update layers here
+			for (int i = 0; i < layerStack.size(); i++) {
+				layerStack.get(i).update();
+			}
 
-		if (time == 0) {
-			messageManager.update();
-			if (key.enter) uiManager.nextText();
-			time = 10;
+			if (time == 0) {
+				messageManager.update();
+				if (key.enter)
+					uiManager.nextText();
+				time = 10;
+			}
+		} else {
+			menuController.update();
 		}
 
 	}
@@ -171,7 +192,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private void render() {
 		BufferStrategy bs = getBufferStrategy();
 		if (bs == null) {
-			createBufferStrategy(5);
+			createBufferStrategy(3);
 			return;
 		}
 		screen.Clear();
@@ -179,11 +200,8 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		double yScroll = player.getY() - screen.height / 2;
 		level.setScroll((int) xScroll, (int) yScroll);
 
+		Graphics g = bs.getDrawGraphics();
 		// Render layers here
-		for (int i = 0; i < layerStack.size(); i++) {
-			layerStack.get(i).render(screen);
-		}
-
 //		screen.renderSheet(0, 0, SpriteSheet.famaleVampire, false);
 //		Logger.getGlobal().info(SpriteSheet.witch.toString());
 //		font.render(0, 0,0x000000, "123456789", screen);
@@ -191,16 +209,23 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 //		screen.renderSprite(130, 0, Sprite.green_bool, false);
 //		screen.renderSprite(160, 0, sprites[2], false);
 //		screen.renderSprite(190, 0, sprites[3], false);
-		level.RenderCenario(screen);
 //		for (int i = 0; i < pixels.length; i++) {
 //			pixels[i] = screen.pixels[i];
 //		}
 
-		Graphics g = bs.getDrawGraphics();
-		g.setColor(new Color(0xff00ff));
+		g.setColor(RecColor);
 		g.fillRect(0, 0, getWidth(), getHeight());
-		g.drawImage(image, 0, 0, width * scale, height * scale, null);
-		uiManager.render(g);
+		if (!pause) {
+			level.RenderCenario(screen);
+			for (int i = 0; i < layerStack.size(); i++) {
+				layerStack.get(i).render(screen);
+			}
+			g.drawImage(image, 0, 0, width * scale, height * scale, null);
+			uiManager.render(g);
+		} else {
+			g.drawImage(menuController.getImage(), 0, 0, frame.getWidth(), frame.getHeight(), null);
+			menuController.render(g);
+		}
 
 		// g.setColor(Color.white);
 		// g.fillRect(Mouse.getX() -32, Mouse.gety() -32, 64, 64);
@@ -209,31 +234,13 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 		g.setColor(Color.white);
 		g.drawString("x: " + player.getX() + " y: " + player.getY(), 700, 450);
-//		uiManager.render(screen);
 		g.dispose();
 		bs.show();
 
 	}
 
-	public static void main(String[] args) {
-		try {
-			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException exception) {
-			// TODO Auto-generated catch-block stub.
-			exception.printStackTrace();
-		}
-		Game game = new Game();
-		game.frame.setResizable(false);
-		game.frame.setTitle("first");
-		game.frame.add(game);
-		game.frame.pack();
-		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		game.frame.setLocationRelativeTo(null);
-		game.frame.setVisible(true);
-
-		game.start();
-
+	public void unpause() {
+		pause = false;
 	}
 
 }
