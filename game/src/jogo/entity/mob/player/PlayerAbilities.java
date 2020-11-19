@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 
-import jogo.Game;
 import jogo.entity.mob.Mob.KindofProjectile;
 import jogo.entity.mob.Player;
 import jogo.events.types.AbilityChosedEvent;
@@ -17,7 +16,6 @@ import jogo.util.ImageUtils;
 import jogo.util.Vector2i;
 
 public class PlayerAbilities {
-	// 40 200 
 	private int time = 0;
 	private  UIManager ui;
 	private final  int sizeX = 220;

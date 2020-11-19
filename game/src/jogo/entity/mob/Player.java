@@ -111,101 +111,8 @@ public class Player extends Mob implements EventListener {
 		maxMana = currentMana = 100;
 
 		this.ui = ui;
-		ui.addPanel(panel);
-		UILabel nameLabel = new UILabel(new Vector2i(40, 30), name);
-		nameLabel.setColor(0xbbbbbb);
-		nameLabel.setFont(new Font("Verdana", Font.PLAIN, 24));
-		nameLabel.dropShadow = true;
-		panel.addComponent(nameLabel);
-
-		uiHealthBar = new UIProgressBar(new Vector2i(10, 215), new Vector2i(80 * 3 - 20, 20));
-		uiHealthBar.setColor(0x6a6a6a);
-		uiHealthBar.setForegroundColor(0xee3030);
-		panel.addComponent(uiHealthBar);
-
-		String howMuchhealth = Integer.toString(health);
-		String valueOfMaxHealth = Integer.toString(MaxHelath);
-		String textHelthBar = "HP: " + howMuchhealth + "/" + valueOfMaxHealth;
-		Vector2i HealthBarTextPosition = new Vector2i(uiHealthBar.position).add(new Vector2i(2, 16));
-		hpLabel = new UILabel(HealthBarTextPosition, textHelthBar);
-		hpLabel.setColor(0xffffff);
-		hpLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-		panel.addComponent(hpLabel);
-
-		uiPlayerLevelBar = new UIProgressBar(new Vector2i(10, 245), new Vector2i(80 * 3 - 20, 20));
-		uiPlayerLevelBar.setColor(0x6a6a6a);
-		uiPlayerLevelBar.setForegroundColor(0x13ed13);
-		panel.addComponent(uiPlayerLevelBar);
-
-		String witchLevel = Integer.toString(PLayerLevel);
-		String textAndLevel = "LVL: " + witchLevel;
-		Vector2i lvlPosition = new Vector2i(uiPlayerLevelBar.position).add(new Vector2i(2, 16));
-		PlayerLevelLabel = new UILabel(lvlPosition, textAndLevel);
-		PlayerLevelLabel.setColor(0xffffff);
-		PlayerLevelLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-		panel.addComponent(PlayerLevelLabel);
-
-		UIManaBar = new UIProgressBar(new Vector2i(10, 275), new Vector2i(80 * 3 - 20, 20));
-		UIManaBar.setColor(0x6a6a6a);
-		UIManaBar.setForegroundColor(0x3085e8);
-		panel.addComponent(UIManaBar);
-
-		String howMuchMana = Integer.toString(currentMana);
-		String ValueOfMaxMana = Integer.toString(maxMana);
-		String textManaBar = "MANA: " + howMuchMana + "/" + ValueOfMaxMana;
-		Vector2i manaPosition = new Vector2i(UIManaBar.position).add(new Vector2i(2, 16));
-		manaLabel = new UILabel(manaPosition, textManaBar);
-		manaLabel.setColor(0xffffff);
-		manaLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-		panel.addComponent(manaLabel);
-
-		button = new UIButton(new Vector2i(10, 350), new Vector2i(100, 30), new UIActionListener() {
-			public void perform() {
-//				System.out.println("Action Performed!");
-			}
-		});
-		button.setText("Hello");
-		panel.addComponent(button);
-
-		try {
-			image = ImageIO.read(Player.class.getResource("/textures/home.png"));
-			System.out.println(image.getType());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		UIButton imageButton = new UIButton(new Vector2i(10, 360), image, new UIActionListener() {
-			public void perform() {
-				System.exit(0);
-			}
-		});
-		imageButton.setButtonListener(new UIButtonListener() {
-			public void entered(UIButton button) {
-				button.setImage(ImageUtils.changeBrightness(image, -50));
-			}
-
-			public void exited(UIButton button) {
-				button.setImage(image);
-			}
-
-//			blockShooting = ui.blockShooting();
-//			
-//			if(time% 5 == 0) {
-//				updateLevel();
-//			
-//				if(imput.number1) playerAbilities.setCurrentAbility(1);
-//				else if(imput.number2) playerAbilities.setCurrentAbility(2);
-//				else if(imput.number3) playerAbilities.setCurrentAbility(3);
-//			}
-			public void pressed(UIButton button) {
-				button.setImage(ImageUtils.changeBrightness(image, 50));
-			}
-
-			public void released(UIButton button) {
-				button.setImage(image);
-			}
-		});
-		panel.addComponent(imageButton);
+		createUIConponents();
+		
 
 		updateHealth();
 		updateMana();
@@ -533,5 +440,103 @@ public class Player extends Mob implements EventListener {
 
 	public UIManager getUIManager() {
 		return ui;
+	}
+	
+	public void createUIConponents() {
+		ui.addPanel(panel);
+		UILabel nameLabel = new UILabel(new Vector2i(40, 30), name);
+		nameLabel.setColor(0xbbbbbb);
+		nameLabel.setFont(new Font("Verdana", Font.PLAIN, 24));
+		nameLabel.dropShadow = true;
+		panel.addComponent(nameLabel);
+
+		uiHealthBar = new UIProgressBar(new Vector2i(10, 215), new Vector2i(80 * 3 - 20, 20));
+		uiHealthBar.setColor(0x6a6a6a);
+		uiHealthBar.setForegroundColor(0xee3030);
+		panel.addComponent(uiHealthBar);
+
+		String howMuchhealth = Integer.toString(health);
+		String valueOfMaxHealth = Integer.toString(MaxHelath);
+		String textHelthBar = "HP: " + howMuchhealth + "/" + valueOfMaxHealth;
+		Vector2i HealthBarTextPosition = new Vector2i(uiHealthBar.position).add(new Vector2i(2, 16));
+		hpLabel = new UILabel(HealthBarTextPosition, textHelthBar);
+		hpLabel.setColor(0xffffff);
+		hpLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		panel.addComponent(hpLabel);
+
+		uiPlayerLevelBar = new UIProgressBar(new Vector2i(10, 245), new Vector2i(80 * 3 - 20, 20));
+		uiPlayerLevelBar.setColor(0x6a6a6a);
+		uiPlayerLevelBar.setForegroundColor(0x13ed13);
+		panel.addComponent(uiPlayerLevelBar);
+
+		String witchLevel = Integer.toString(PLayerLevel);
+		String textAndLevel = "LVL: " + witchLevel;
+		Vector2i lvlPosition = new Vector2i(uiPlayerLevelBar.position).add(new Vector2i(2, 16));
+		PlayerLevelLabel = new UILabel(lvlPosition, textAndLevel);
+		PlayerLevelLabel.setColor(0xffffff);
+		PlayerLevelLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		panel.addComponent(PlayerLevelLabel);
+
+		UIManaBar = new UIProgressBar(new Vector2i(10, 275), new Vector2i(80 * 3 - 20, 20));
+		UIManaBar.setColor(0x6a6a6a);
+		UIManaBar.setForegroundColor(0x3085e8);
+		panel.addComponent(UIManaBar);
+
+		String howMuchMana = Integer.toString(currentMana);
+		String ValueOfMaxMana = Integer.toString(maxMana);
+		String textManaBar = "MANA: " + howMuchMana + "/" + ValueOfMaxMana;
+		Vector2i manaPosition = new Vector2i(UIManaBar.position).add(new Vector2i(2, 16));
+		manaLabel = new UILabel(manaPosition, textManaBar);
+		manaLabel.setColor(0xffffff);
+		manaLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		panel.addComponent(manaLabel);
+
+//		button = new UIButton(new Vector2i(10, 350), new Vector2i(100, 30), new UIActionListener() {
+//			public void perform() {
+////				System.out.println("Action Performed!");
+//			}
+//		});
+//		button.setText("Hello");
+//		panel.addComponent(button);
+
+//		try {
+//			image = ImageIO.read(Player.class.getResource("/textures/home.png"));
+//			System.out.println(image.getType());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		UIButton imageButton = new UIButton(new Vector2i(10, 360), image, new UIActionListener() {
+//			public void perform() {
+//				System.exit(0);
+//			}
+//		});
+//		imageButton.setButtonListener(new UIButtonListener() {
+//			public void entered(UIButton button) {
+//				button.setImage(ImageUtils.changeBrightness(image, -50));
+//			}
+//
+//			public void exited(UIButton button) {
+//				button.setImage(image);
+//			}
+
+//			blockShooting = ui.blockShooting();
+//			
+//			if(time% 5 == 0) {
+//				updateLevel();
+//			
+//				if(imput.number1) playerAbilities.setCurrentAbility(1);
+//				else if(imput.number2) playerAbilities.setCurrentAbility(2);
+//				else if(imput.number3) playerAbilities.setCurrentAbility(3);
+//			}
+//			public void pressed(UIButton button) {
+//				button.setImage(ImageUtils.changeBrightness(image, 50));
+//			}
+//
+//			public void released(UIButton button) {
+//				button.setImage(image);
+//			}
+//		});
+//		panel.addComponent(imageButton);
 	}
 }
