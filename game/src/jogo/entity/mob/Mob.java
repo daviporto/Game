@@ -25,7 +25,7 @@ public abstract class Mob extends Entity {
 	protected boolean walking = false;
 
 	protected int health = -500;
-	protected int MaxHelath;
+	protected int MaxHealth;
 	protected int burning = 0;
 	protected int freezening = 0;
 	protected int poisoned = 0;
@@ -34,7 +34,7 @@ public abstract class Mob extends Entity {
 	public void save(DSObject o) {
 		super.save(o);
 		o.pushField(new FieldInt("health", health));
-		o.pushField(new FieldInt("maxHealth", MaxHelath));
+		o.pushField(new FieldInt("maxHealth", MaxHealth));
 		o.pushField(new FieldInt("burning", burning));
 		o.pushField(new FieldInt("freezening", freezening));
 		o.pushField(new FieldInt("poisoned", poisoned));
@@ -178,7 +178,7 @@ public abstract class Mob extends Entity {
 
 		else if (p == null) {
 			p = new WizardProjectile((int) x, (int) y, direction);
-			System.out.println("default projectile loaded");
+			System.err.println("default projectile loaded");
 		}
 
 		level.add(p);

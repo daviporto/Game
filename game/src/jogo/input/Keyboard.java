@@ -3,7 +3,9 @@ package jogo.input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import jogo.entity.mob.player.PlayerAbilities;
 import jogo.events.EventListener;
@@ -39,20 +41,20 @@ public class Keyboard implements KeyListener {
 
 	public void keyPressed(KeyEvent e) {
 		keys[e.getKeyCode()] = true;
+
 	}
 
 	public void keyReleased(KeyEvent e) {
 		keys[e.getKeyCode()] = false;
-		if (!contains(e.getKeyCode()))
-			keysPressed.remove(Integer.valueOf(e.getKeyCode()));
+		if (!keysPressed.isEmpty())
+			Unpress(e.getKeyCode());
 	}
 
-	public static boolean contains(int KeyCode) {
-		for (Integer i : keysPressed)
-			if (i.equals(KeyCode))
-				return true;
-		return false;
+	public static void Unpress(int KeyCode) {
+		if(keysPressed.contains(Integer.valueOf(KeyCode)))
+			keysPressed.remove(Integer.valueOf(KeyCode));
 	}
+	
 
 	public static boolean presed(int keyCode) {
 //		System.out.println(keys[KeyEvent.VK_L]);
@@ -60,7 +62,7 @@ public class Keyboard implements KeyListener {
 	}
 
 	public static boolean firstPress(int KeyCode) {
-		if(keys[KeyCode] & !contains(KeyCode)) {
+		if (keys[KeyCode] & !keysPressed.contains(Integer.valueOf(KeyCode))) {
 			keysPressed.add(Integer.valueOf(KeyCode));
 			return true;
 		}

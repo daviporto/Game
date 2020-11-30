@@ -35,12 +35,12 @@ public class Chaser extends Mob{
 		if(players.size() > 0) {
 			
 		Player player = players.get(0);
-		System.out.println(x + "    "  + player.getX() );
+//		System.out.println(x + "    "  + player.getX() );
 		if((int)x < (int)player.getX()) xaxis += speed;//if chaser x is less than player go to right
 		if((int)x > (int)player.getX()) xaxis -= speed;
 		if((int)y < (int)player.getY()) yaxis += speed;
 		if((int)y > (int)player.getY()) yaxis -= speed;
-		System.out.println(xaxis );
+//		System.out.println(xaxis );
 		}
 		
 		if(xaxis != 0 || yaxis != 0) {

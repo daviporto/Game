@@ -69,7 +69,8 @@ public abstract class AStar extends Mob {
 	}
 
 	public void save(DSObject o) {
-		o.pushField(new FieldDouble("speed", speed));
+		super.save(o);
+//		o.pushField(new FieldDouble("speed", speed));
 		o.pushField(new FieldBoolean("lazy", lazy));
 		o.pushField(new FieldInt("awake", awake));
 		o.pushField(new FieldInt("spawnX", spawnX));

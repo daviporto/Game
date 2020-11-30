@@ -2,13 +2,13 @@ package jogo.entity.mob;
 
 import components.Fields.FieldInt;
 import components.Objects.DSObject;
-import components.dataBase.DSDataBase;
 import jogo.Game;
 import jogo.entity.spawner.ParticleSpawner;
 import jogo.graphics.AnimatedSprite;
 import jogo.graphics.Screen;
 import jogo.graphics.Sprite;
 import jogo.graphics.SpriteSheet;
+import jogo.level.Level;
 
 
 public class Dummy extends Mob{
@@ -68,29 +68,30 @@ public class Dummy extends Mob{
 		health = 100;
 	}
 	
-	public void save(DSDataBase db, int entityIndex){
-		String name = "Dummy" + Integer.toString(entityIndex);
-		DSObject o = new DSObject(name);
+	public DSObject save(){
+		DSObject o = new DSObject("Dummy");
 		super.save(o);
 		o.pushField(new FieldInt("spawnX", spawnX));
 		o.pushField(new FieldInt("spawnY", spawnY));
 		o.pushField(new FieldInt("xpAmount", xpAmount));
-		db.pushObject(o);
+		return o;
 	}
 	
-	public void load(DSObject o) {
+	public static Dummy load(DSObject o, Level level) {
 		Dummy e = new Dummy();
+		e.setLevel(level);
 		e.x = o.popField().getInt();
 		e.y = o.popField().getInt();
 		e.health = o.popField().getInt();
-		e.MaxHelath = o.popField().getInt();
+		e.MaxHealth = o.popField().getInt();
 		e.burning = o.popField().getInt();
 		e.freezening = o.popField().getInt();
 		e.poisoned = o.popField().getInt();
 		e.spawnX = o.popField().getInt();
 		e.spawnY = o.popField().getInt();
 		e.xpAmount = o.popField().getInt();
-		sprite = Sprite.blueDummy;
+		e.sprite = Sprite.blueDummy;
+		return e;
 	}
 
 	@Override

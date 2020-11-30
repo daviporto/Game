@@ -125,8 +125,6 @@ public class MenuMob extends Mob {
 	}
 
 	public void move(double xaxis, double yaxis) {
-		if (xaxis > 400)
-			System.out.println("olha a merda ai");
 		if (xaxis != 0 && yaxis != 0) {
 			move(xaxis, 0);
 			move(0, yaxis);

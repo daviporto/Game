@@ -9,12 +9,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+import components.Objects.DSObject;
 import components.dataBase.DSDataBase;
 import jogo.entity.Entity;
 import jogo.entity.mob.Dummy;
 import jogo.entity.mob.Mob;
 import jogo.entity.mob.Mob.KindofProjectile;
+import jogo.entity.mob.usingstar.Mage;
+import jogo.entity.mob.usingstar.Vampire;
+import jogo.entity.mob.usingstar.Witch;
 import jogo.entity.mob.Player;
+import jogo.entity.mob.PumpkinHead;
+import jogo.entity.mob.Shooter;
 import jogo.entity.particle.Particle;
 import jogo.entity.projectile.Projectile;
 import jogo.entity.spawner.ParticleSpawner;
@@ -33,6 +39,10 @@ public class Level extends Layer {
 	protected int tile_size;
 	protected MessageEventsManager messagesManager;
 	protected UIManager ui;
+
+	public enum Levels {
+		Spawn, Teste1, Teste2
+	}
 
 	private int xScroll, yScroll;
 
@@ -56,6 +66,10 @@ public class Level extends Layer {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public Levels getLevel() {
+		return null;
 	}
 
 	public void addMessageManager(MessageEventsManager m) {
@@ -84,13 +98,38 @@ public class Level extends Layer {
 	}
 
 	public DSDataBase save() {
-		DSDataBase db = new DSDataBase("levelsave");
+		DSDataBase db = new DSDataBase("level save");
 
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).save(db, i);
+		db.pushObject(player.save());
+
+		for (Entity e : entities) {
+			if (e instanceof Mob)
+				db.pushObject(e.save());
 		}
 
 		return db;
+	}
+
+	public void load(DSDataBase db) {
+		entities.clear();
+		for (int i = 0; i < db.objects.size(); i++) {
+			DSObject o = db.objects.get(i);
+			String entityType = o.getName();
+
+			if(entityType.equals("Dummy"))
+				entities.add(Dummy.load(o,this));
+			else if(entityType.equals("Shooter"))
+				entities.add(Shooter.load(o,this));
+			else if(entityType.equals("PumpkinHead"))
+				entities.add(PumpkinHead.load(o,this));
+			else if(entityType.equals("Witch"))
+				entities.add(Witch.load(o,this));
+			else if(entityType.equals("Vampire"))
+				entities.add(Vampire.load(o,this));
+			else if(entityType.equals("Mage"))
+				entities.add(Mage.load(o,this));
+		}
+		
 	}
 
 	public int getPlayerx() {
@@ -102,9 +141,9 @@ public class Level extends Layer {
 	}
 
 	protected void loadLevel(String path) {
-		
+
 	}
-	
+
 	public void setUIManeger(UIManager ui) {
 		this.ui = ui;
 	}
@@ -511,6 +550,10 @@ public class Level extends Layer {
 
 	public void addLocationTrigerredEvents() {
 
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 }

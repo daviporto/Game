@@ -27,7 +27,6 @@ public class SpawnLevel extends Level {
 		}
 		
 		for(int i = 0; i < 20 ; i ++) {
-			System.out.println("enter here?");
 //			add(new Dummy(25, 30));	
 		}
 		

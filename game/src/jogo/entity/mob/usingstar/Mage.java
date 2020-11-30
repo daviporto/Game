@@ -13,6 +13,7 @@ import jogo.graphics.AnimatedSprite;
 import jogo.graphics.Screen;
 import jogo.graphics.Sprite;
 import jogo.graphics.SpriteSheet;
+import jogo.level.Level;
 
 public class Mage extends AStar{
 	private boolean shootPlayer = true;
@@ -40,46 +41,51 @@ public class Mage extends AStar{
 		left = new AnimatedSprite(SpriteSheet.blueMage_left, 32, 32, 3);
 		right = new AnimatedSprite(SpriteSheet.blueMage_right, 32, 32, 3);
 		animSprite = down;
-		health = MaxHelath = 300;
+		health = MaxHealth = 300;
 	}
 	
 	
-	public void save(DSDataBase db, int entityIndex) {
-		String name = "Mage" + Integer.toString(entityIndex);
-		DSObject o = new DSObject(name);
+	public DSObject save() {
+		DSObject o = new DSObject("Mage");
 		super.save(o);
 		o.pushField(new FieldInt("xpAmount", xpAmount));
 		o.pushField(new FieldBoolean("shootPLayer", shootPlayer));
 		o.pushField(new FieldInt("SHOOTERTATE", SHOOTERTATE));
-		o.pushField(new FieldInt("MAXHEALTH", MAXHEALTH));
 		o.pushField(new FieldInt("fireRate", fireRate));
 		o.pushField(new FieldByte("gender", KindofProjectile.getByte(kind)));
-		db.pushObject(o);
+		return o;
 	}
 
-	public Mage load(DSObject o) {
+	public static Mage load(DSObject o, Level level) {
 		boolean lazy = o.getAndRemoveField("lazy").getBoolean();
 		int awake = o.getAndRemoveField("awake").getInt();
 		int spawnX = o.getAndRemoveField("spawnX").getInt();
-		int spawnY = o.getAndRemoveField("spawnX").getInt();
+		int spawnY = o.getAndRemoveField("spawnY").getInt();
 		int SHOOTERTATE = o.getAndRemoveField("SHOOTERTATE").getInt();
-		int MAXHEALTH = o.getAndRemoveField("MAXHEALTH").getInt();
+		int MAXHEALTH = o.getAndRemoveField("maxHealth").getInt();
 		int followUntil = o.getAndRemoveField("followUntil").getInt();
 		boolean shootPLayer = o.getAndRemoveField("shootPLayer").getBoolean();
+		boolean following = o.getAndRemoveField("following").getBoolean();
 
 		Mage e = new Mage(lazy, awake, spawnX, spawnY, SHOOTERTATE, MAXHEALTH, followUntil, shootPLayer);
-
+		e.setLevel(level);
 		e.x = o.popField().getInt();
 		e.y = o.popField().getInt();
 		e.health = o.popField().getInt();
-		e.MaxHelath = o.popField().getInt();
 		e.burning = o.popField().getInt();
 		e.freezening = o.popField().getInt();
 		e.poisoned = o.popField().getInt();
 		e.xpAmount = o.popField().getInt();
 		e.fireRate = o.popField().getInt();
-		e.kind = KindofProjectile.getKind(o.popField().getByte());
-
+		byte b = o.popField().getByte();
+		e.kind = KindofProjectile.getKind(b);
+		e.SetFollowing(following);
+		
+		e.up = new AnimatedSprite(SpriteSheet.blueMage_up, 32, 32, 3);
+		e.down = new AnimatedSprite(SpriteSheet.blueMage_down, 32, 32, 3);
+		e.left = new AnimatedSprite(SpriteSheet.blueMage_left, 32, 32, 3);
+		e.right = new AnimatedSprite(SpriteSheet.blueMage_right, 32, 32, 3);
+		e.animSprite = e.down;
 		return e;
 	}
 	

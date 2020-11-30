@@ -11,7 +11,7 @@ import jogo.entity.mob.PumpkinHead;
 import jogo.entity.mob.Shooter;
 import jogo.entity.mob.usingstar.Mage;
 import jogo.entity.mob.usingstar.Vampire;
-import jogo.entity.mob.usingstar.witch;
+import jogo.entity.mob.usingstar.Witch;
 import jogo.events.messageEvents.LevelTrigered;
 import jogo.events.messageEvents.LocationTrigered;
 import jogo.graphics.Screen;
@@ -55,9 +55,9 @@ public class NivelDeTeste extends Level {
 		add(new PumpkinHead(1167, 714, false, true));
 		add(new PumpkinHead(1167, 831, false, true));
 
-		add(new witch(1356, 454, false, 70, 170, true));
-		add(new witch(1356, 613, false, 70, 170, true));
-		add(new witch(1356, 780, false, 70, 170, true));
+		add(new Witch(1356, 454, false, 70, 170, true));
+		add(new Witch(1356, 613, false, 70, 170, true));
+		add(new Witch(1356, 780, false, 70, 170, true));
 
 		add(new Vampire(2085, 646, false, 90, 250, true, Vampire.Gender.FAMELE));
 		add(new Vampire(2109, 974, false, 90, 250, true, Vampire.Gender.MALE));
@@ -74,6 +74,10 @@ public class NivelDeTeste extends Level {
 		PM.SetKindOfProjectile(KindofProjectile.POISONBOOL);
 		add(PM);
 
+	}
+	
+	public Level.Levels getLevel(){
+		return Levels.Teste1;
 	}
 
 	public void addLocationTrigerredEvents() {

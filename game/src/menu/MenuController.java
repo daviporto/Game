@@ -1,7 +1,12 @@
 package menu;
 
+import static jogo.util.ColorUtils.getColor;
+
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+
+import javax.swing.JOptionPane;
 
 import jogo.Game;
 import jogo.graphics.ui.UIManager;
@@ -11,6 +16,8 @@ public class MenuController {
 	private MainMenuPanel mainMenuPanel;
 	private UIManager uiManager;
 	private Game game;
+	
+	public static final Color DEFAULTBTNCOLOR = getColor(0x05101010);
 
 	public MenuController(Game game) {
 		this.game = game;
@@ -36,7 +43,12 @@ public class MenuController {
 	}
 
 	public void load() {
-
+		game.load();
+	}
+	
+	public void save() {
+		game.save();
+		
 	}
 
 	public void lontrols() {
@@ -50,6 +62,8 @@ public class MenuController {
 	public void credits() {
 
 	}
+	
+	
 
 
 	public Image getImage() {

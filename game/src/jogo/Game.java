@@ -4,14 +4,20 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
+import components.Fields.FieldShort;
+import components.Objects.DSObject;
+import components.dataBase.DSDataBase;
+import components.string.DSString;
 import jogo.entity.mob.Player;
 import jogo.events.Event;
 import jogo.events.messageEvents.MessageEventsManager;
@@ -22,6 +28,7 @@ import jogo.graphics.ui.UIManager;
 import jogo.input.Keyboard;
 import jogo.input.Mouse;
 import jogo.level.Level;
+import jogo.level.Level.Levels;
 import jogo.level.TileCoordinate;
 import menu.MenuController;
 
@@ -89,7 +96,12 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		messageManager.newLevel(0);// add events triggered at level 0
+//		menuController.addContinueButton();
 		start();
+	}
+	
+	public void newGame() {
+		
 	}
 
 	public static int getwindoewidth() {
@@ -107,11 +119,34 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	public void addLayer(Layer layer) {
 		layerStack.add(layer);
 	}
+	
+	public void save() {
+		DSDataBase db = level.save();
+		DSObject level = new DSObject("level");
+		Level.Levels  witchLevel =  this.level.getLevel();
+		short levelID = -1;
+		if (witchLevel == Levels.Teste1) 
+			levelID =0;
+		
+		level.pushField(new FieldShort("levelID", levelID));
+		db.pushObject(level);
+		db.enableDebbug();
+		db.serializeToFile("saves/save");
+	}
+	
+	public void load() {
+		DSDataBase db = DSDataBase.deserializeFromFile("saves/save");
+		DSObject o = db.getAndRemoveObject("level");
+		short levelID = o.popField().getShort();
+		if (levelID == 0)
+			level = Level.teste;
+		player = Player.load(db.getAndRemoveObject("player"), level, uiManager);
+		level.setPlayer(player);
+		db.enableDebbug();
+		level.load(db);
+	}
 
 	public synchronized void start() {
-//		DSDataBase db = level.save();
-//		db.serializeToFile("save");
-//		db.enableDebbug();
 		running = true;
 		thread = new Thread(this, "Display");
 		thread.start();
@@ -166,6 +201,10 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 	private void update() {
 		key.update();
+		
+		if(Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
+			pause = pause ? false : true;
+		}
 
 		if (!pause) {
 			if (time > 0)
@@ -239,7 +278,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 	}
 
-	public void unpause() {
+	public  void unpause() {
 		pause = false;
 	}
 

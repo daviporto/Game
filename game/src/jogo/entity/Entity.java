@@ -7,7 +7,6 @@ import java.util.Random;
 
 import components.Fields.FieldInt;
 import components.Objects.DSObject;
-import components.dataBase.DSDataBase;
 import jogo.graphics.Screen;
 import jogo.graphics.Sprite;
 import jogo.level.Level;
@@ -32,13 +31,17 @@ public class Entity {
 		
 	}
 	
-	public void save(DSDataBase db, int entityIndex) {
-		
+	public DSObject save() {
+		return null;
 	}
 	
 	public void save(DSObject o) {
 		o.pushField(new FieldInt("x", x));
 		o.pushField(new FieldInt("y", y));
+	}
+	
+	public void setLevel(Level level) {
+		this.level = level;
 	}
 	
 	

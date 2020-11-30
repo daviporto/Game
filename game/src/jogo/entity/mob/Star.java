@@ -41,10 +41,7 @@ public class Star extends Mob{
 		Vector2i start = new Vector2i(getX() >> 4, getY() >> 4);
 		Vector2i destination = new Vector2i(px >> 4, py >> 4);
 		if (time % 3 == 0) {
-			long beginning = LocalTime.now().getNano();
 			path = level.findPath(start, destination);
-			System.out.println("time: "+( LocalTime.now().getNano() - beginning));
-		
 		}
 		if (path != null) {
 			if (path.size() > 0) {

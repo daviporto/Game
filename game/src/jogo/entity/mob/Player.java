@@ -6,11 +6,13 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
+import components.Fields.FieldBoolean;
+import components.Fields.FieldByte;
+import components.Fields.FieldInt;
+import components.Objects.DSObject;
+import components.string.DSString;
 import jogo.Game;
 import jogo.entity.mob.player.PlayerAbilities;
 import jogo.entity.mob.player.PlayerNextLevelChoice;
@@ -30,9 +32,7 @@ import jogo.graphics.AnimatedSprite;
 import jogo.graphics.Screen;
 import jogo.graphics.Sprite;
 import jogo.graphics.SpriteSheet;
-import jogo.graphics.ui.UIActionListener;
 import jogo.graphics.ui.UIButton;
-import jogo.graphics.ui.UIButtonListener;
 import jogo.graphics.ui.UILabel;
 import jogo.graphics.ui.UIManager;
 import jogo.graphics.ui.UIPanel;
@@ -40,7 +40,7 @@ import jogo.graphics.ui.UIProgressBar;
 import jogo.graphics.ui.UITextandNext;
 import jogo.input.Keyboard;
 import jogo.input.Mouse;
-import jogo.util.ImageUtils;
+import jogo.level.Level;
 import jogo.util.Vector2i;
 
 public class Player extends Mob implements EventListener {
@@ -88,6 +88,10 @@ public class Player extends Mob implements EventListener {
 	private BufferedImage image;
 	UIPanel panel = (UIPanel) new UIPanel(new Vector2i((280) * 3, 0), new Vector2i(80 * 3, 168 * 3)).setColor(0x4f4f4f);
 
+	private Player() {
+
+	}
+
 	@Deprecated
 	public Player(String name, Keyboard imput) {
 		this.name = name;
@@ -102,9 +106,9 @@ public class Player extends Mob implements EventListener {
 		this.x = x;
 		this.y = y;
 		this.imput = imput;
-	
+
 		// Player default attributes
-		health = maxMana = currentMana = MaxHelath = 100;
+		health = maxMana = currentMana = MaxHealth = 100;
 		PLayerLevel = xp = 0;
 		xpToNextLevel = 100;
 		lifeRecoverPerSecond = manaRecoverPerSecond = 1;
@@ -112,7 +116,6 @@ public class Player extends Mob implements EventListener {
 
 		this.ui = ui;
 		createUIConponents();
-		
 
 		updateHealth();
 		updateMana();
@@ -124,8 +127,67 @@ public class Player extends Mob implements EventListener {
 		upgradeAbility = new UpgradeAbility(ui);
 	}
 
+	public DSObject save() {
+		DSObject o = new DSObject("player");
+		o.pushString(new DSString("playerName", name));
+		super.save(o);
+		o.pushField(new FieldInt("PLayerLevel", PLayerLevel));
+		o.pushField(new FieldInt("xp", xp));
+		o.pushField(new FieldByte("currentAbility", KindofProjectile.getByte(currentAbility)));
+		o.pushField(new FieldInt("currentMana", currentMana));
+		o.pushField(new FieldInt("xpToNextLevel", xpToNextLevel));
+		o.pushField(new FieldInt("manaRecoverPerSecond", manaRecoverPerSecond));
+		o.pushField(new FieldInt("lifeRecoverPerSecond", lifeRecoverPerSecond));
+		o.pushField(new FieldInt("maxMana", maxMana));
+		o.pushField(new FieldBoolean("shooting", shooting));
+		o.pushField(new FieldBoolean("choosingNextLevel", choosingNextLevel));
+		o.pushField(new FieldBoolean("choosingNewAbility", choosingNewAbility));
+		o.pushField(new FieldBoolean("blockShooting", blockShooting));
+		upgradeAbility.save(o);
+		return o;
+	}
+
+	public static  Player load(DSObject o, Level level, UIManager ui) {
+		Player player = new Player();
+		player.setLevel(level);
+		player.name = o.popString().getString();
+		player.x = o.popField().getInt();
+		player.y = o.popField().getInt();
+		player.health = o.popField().getInt();
+		player.MaxHealth = o.popField().getInt();
+		player.burning = o.popField().getInt();
+		player.freezening = o.popField().getInt();
+		player.poisoned = o.popField().getInt();
+		player.PLayerLevel = o.popField().getInt();
+		player.xp = o.popField().getInt();
+		player.currentAbility = KindofProjectile.getKind(o.popField().getByte());
+		player.currentMana = o.popField().getInt();
+		player.xpToNextLevel = o.popField().getInt();
+		player.manaRecoverPerSecond = o.popField().getInt();
+		player.lifeRecoverPerSecond = o.popField().getInt();
+		player.maxMana = o.popField().getInt();
+		player.shooting = o.popField().getBoolean();
+		player.choosingNextLevel = o.popField().getBoolean();
+		player.choosingNewAbility = o.popField().getBoolean();
+		player.blockShooting = o.popField().getBoolean();
+		player.setUIManager(ui);
+		player.createUIConponents();
+		
+
+		player.playerNextLevelChoice = new PlayerNextLevelChoice(ui);
+		player.playerAbilities = new PlayerAbilities(player);
+		player.playerAbilities.drawHablities();
+		player.upgradeAbility = new UpgradeAbility(ui);
+		
+		return player;
+	}
+
 	public String getNmae() {
 		return name;
+	}
+	
+	public void setUIManager(UIManager ui) {
+		this.ui = ui;
 	}
 
 	public int getMana() {
@@ -151,13 +213,13 @@ public class Player extends Mob implements EventListener {
 
 	public void setHealth(int health) {
 		this.health += health;
-		this.health = clamp(this.health, 0, MaxHelath);// Redundance
+		this.health = clamp(this.health, 0, MaxHealth);// Redundance
 		updateHealth();
 	}
 
 	public void addOrRemoveHealth(int health) {
 		this.health += health;
-		this.health = clamp(this.health, 0, MaxHelath);
+		this.health = clamp(this.health, 0, MaxHealth);
 		updateHealth();
 	}
 
@@ -229,7 +291,6 @@ public class Player extends Mob implements EventListener {
 	public void update() {
 		time++;
 		if (time % 1 == 0 & Keyboard.firstPress(KeyEvent.VK_L)) {
-			System.out.println("here");
 			xp = xp + 100;
 		}
 
@@ -248,21 +309,21 @@ public class Player extends Mob implements EventListener {
 		else
 			anim = 0;
 
-		if (imput.up) {
+		if (Keyboard.presed(KeyEvent.VK_UP) || Keyboard.presed(KeyEvent.VK_W)){
 			animSprite = up;
 			yaxis -= speed;
 
 		}
-		if (imput.down) {
+		if (Keyboard.presed(KeyEvent.VK_DOWN) || Keyboard.presed(KeyEvent.VK_S)){
 			animSprite = down;
 			yaxis += speed;
 		}
-		if (imput.left) {
+		if (Keyboard.presed(KeyEvent.VK_LEFT) || Keyboard.presed(KeyEvent.VK_A)) {
 			animSprite = left;
 			xaxis -= speed;
 
 		}
-		if (imput.right) {
+		if (Keyboard.presed(KeyEvent.VK_RIGHT) || Keyboard.presed(KeyEvent.VK_D)){
 			animSprite = right;
 			xaxis += speed;
 		}
@@ -290,8 +351,8 @@ public class Player extends Mob implements EventListener {
 				updateMana();
 			}
 
-			if (health <= MaxHelath) {
-				if (health != MaxHelath)
+			if (health <= MaxHealth) {
+				if (health != MaxHealth)
 					addOrRemoveHealth(lifeRecoverPerSecond);
 				updateHealth();
 			}
@@ -334,11 +395,11 @@ public class Player extends Mob implements EventListener {
 
 	private void updateHealth() {
 		String howMuchhealth = Integer.toString(health);
-		String valueOfMaxHealth = Integer.toString(MaxHelath);
+		String valueOfMaxHealth = Integer.toString(MaxHealth);
 		String textHelthBar = "HP: " + howMuchhealth + "/" + valueOfMaxHealth;
 		hpLabel.update(textHelthBar);
 
-		uiHealthBar.setProgress(health, MaxHelath);
+		uiHealthBar.setProgress(health, MaxHealth);
 	}
 
 	private void nextLevel() {
@@ -356,10 +417,10 @@ public class Player extends Mob implements EventListener {
 		uiPlayerLevelBar.setProgress(xp, xpToNextLevel);
 		if (choice != null) {
 			if (choice == PlayerNextLevelChoice.choice.HP)
-				MaxHelath += 10;
+				MaxHealth += 10;
 			if (choice == PlayerNextLevelChoice.choice.MANA)
 				maxMana += 10;
-			addOrRemoveHealth(MaxHelath);
+			addOrRemoveHealth(MaxHealth);
 			addOrRemoveMana(maxMana);
 			choice = null;
 			whichLevel = Integer.toString(PLayerLevel);
@@ -441,7 +502,7 @@ public class Player extends Mob implements EventListener {
 	public UIManager getUIManager() {
 		return ui;
 	}
-	
+
 	public void createUIConponents() {
 		ui.addPanel(panel);
 		UILabel nameLabel = new UILabel(new Vector2i(40, 30), name);
@@ -456,7 +517,7 @@ public class Player extends Mob implements EventListener {
 		panel.addComponent(uiHealthBar);
 
 		String howMuchhealth = Integer.toString(health);
-		String valueOfMaxHealth = Integer.toString(MaxHelath);
+		String valueOfMaxHealth = Integer.toString(MaxHealth);
 		String textHelthBar = "HP: " + howMuchhealth + "/" + valueOfMaxHealth;
 		Vector2i HealthBarTextPosition = new Vector2i(uiHealthBar.position).add(new Vector2i(2, 16));
 		hpLabel = new UILabel(HealthBarTextPosition, textHelthBar);
