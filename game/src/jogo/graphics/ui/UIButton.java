@@ -163,4 +163,9 @@ public class UIButton extends UIComponent {
 		label.setForegroundColor(color);	
 	}
 
+
+	public String getText() {
+		return label.getText();
+	}
+
 }

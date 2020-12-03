@@ -1,8 +1,10 @@
 package jogo.graphics.ui;
 
 import java.awt.Color;
+import static jogo.util.ColorUtils.getColor;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.logging.Logger;
 
 import jogo.util.Vector2i;
 
@@ -13,8 +15,9 @@ public class UILabel extends UIComponent {
 	public boolean dropShadow = false;
 	public int dropShadowOffset = 2;
 	protected Color foregroundColor;
-	
-	private final static Color DEFAULTFOREGROUNDCOLOR = Color.BLACK;
+
+	public final static Color DEFAULTFOREGROUNDCOLOR = Color.WHITE;
+	public final static Color TRANSPARENT = getColor(0x00000000);
 
 	public UILabel(Vector2i position, String text) {
 		super(position);
@@ -23,27 +26,24 @@ public class UILabel extends UIComponent {
 		color = new Color(0xff00ff);
 		foregroundColor = DEFAULTFOREGROUNDCOLOR;
 	}
-	
 
 	public UILabel setFont(Font font) {
 		this.font = font;
 		return this;
 	}
-	
+
 	public Font getFont() {
 		return font;
 	}
-	
-	
+
 	public void setForegroundColor(Color color) {
 		foregroundColor = color;
 	}
 
-	
 	public void update(String text) {
 		this.text = text;
 	}
-	
+
 	public void setDropShadow(boolean b) {
 		dropShadow = b;
 	}
@@ -58,6 +58,26 @@ public class UILabel extends UIComponent {
 		g.setColor(foregroundColor);
 		g.setFont(font);
 		g.drawString(text, position.x + offset.x, position.y + offset.y);
+	}
+
+	public void transparent() {
+		setForegroundColor(TRANSPARENT);
+	}
+
+	public boolean isTransparent() {
+		return foregroundColor == TRANSPARENT;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void blink() {
+		if (isTransparent()) 
+			foregroundColor = DEFAULTFOREGROUNDCOLOR;
+		else 
+			foregroundColor =TRANSPARENT;
+		
 	}
 
 }

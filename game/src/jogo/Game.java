@@ -200,7 +200,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	}
 
 	private void update() {
-		key.update();
+//		key.update();
 		
 		if(Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
 			pause = pause ? false : true;
@@ -218,7 +218,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 			if (time == 0) {
 				messageManager.update();
-				if (key.enter)
+				if (Keyboard.presed(KeyEvent.VK_ENTER))
 					uiManager.nextText();
 				time = 10;
 			}

@@ -55,8 +55,9 @@ public class UIManager {
 			 if(!texts.isEmpty())
 				 texts.get(0).updateLifeTime();
 		 }
-		for (UIPanel panel : panels) {
-			panel.update();
+		for (UIPanel p : panels) {
+			//Logger.getGlobal().info("updating panel " + p.color);
+			p.update();
 		}
 		
 		for (UITextandNext text : texts) {

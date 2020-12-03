@@ -16,7 +16,6 @@ public class MainMenuPanel extends UIPanel {
 	private MenuController menuController;
 
 	private static final Vector2i DEFAULTSIZE = new Vector2i(300, 60);
-	private UIButton continuebtn;
 
 	public MainMenuPanel(MenuController menuController) {
 		super();
@@ -37,7 +36,9 @@ public class MainMenuPanel extends UIPanel {
 		b = buttonFactory(new Vector2i(20, 120), DEFAULTSIZE, "   load");
 		b.setActinoListener(() -> menuController.load());
 		addComponent(b);
-//		addComponent(buttonFactory(new Vector2i(20, 120), DEFAULTSIZE, "   Controls"));
+		b = buttonFactory(new Vector2i(20, 180), DEFAULTSIZE, "   Controls");
+		b.setActinoListener(() -> menuController.controls());
+		addComponent(b);
 		addComponent(buttonFactory(new Vector2i(20, 10), DEFAULTSIZE, "   continue"));
 		b = buttonFactory(new Vector2i(20, 240), DEFAULTSIZE, "   Save Game");
 		b.setActinoListener(() -> menuController.save());
