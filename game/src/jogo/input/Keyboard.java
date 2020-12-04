@@ -3,15 +3,10 @@ package jogo.input;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.KeyStroke;
-
-import jogo.entity.mob.player.PlayerAbilities;
 import jogo.events.EventListener;
-import jogo.events.types.AbilityChosedEvent;
 
 public class Keyboard implements KeyListener {
 
@@ -64,6 +59,7 @@ public class Keyboard implements KeyListener {
 
 	public void keyTyped(KeyEvent e) {
 		if(waitingForText) {
+			Logger.getGlobal().info("waiting for " + e.getKeyChar());
 			keysTyped.add(e);
 		}
 	}

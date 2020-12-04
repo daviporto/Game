@@ -21,12 +21,9 @@ public class UIProgressBar extends UIComponent {
 		foregroundColor = new Color(0xff00ff);
 	}
 
-	public void setProgress(int  atual, int maxima) {
-		
+	public void setProgress(int  atual, int maxima) {		
 		progress = (atual * 100) / maxima;
 		clamp(progress, 0, 100); // JUST REDUNDANCE
-
-		this.progress = progress;
 	}
 
 	public void setForegroundColor(int color) {

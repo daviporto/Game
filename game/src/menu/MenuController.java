@@ -45,7 +45,7 @@ public class MenuController {
 	}
 
 	public void newGame() {
-		game.unpause();
+		game.newGame();
 	}
 
 	public void load() {
@@ -56,6 +56,10 @@ public class MenuController {
 		game.save();
 
 	}
+	
+	public void continueGame() {
+		game.continueGame();
+	}
 
 	public void controls() {
 		uiManager.removePanel(currentPanel);
@@ -65,7 +69,7 @@ public class MenuController {
 
 	public void changeKey(UIButton b) {
 		removePanel(currentPanel);
-		currentPanel = new ChangeKeyBindingPanel(b);
+		currentPanel = new ChangeKeyBindingPanel(b, this);
 		addPanel(currentPanel);
 	}
 
@@ -75,6 +79,19 @@ public class MenuController {
 
 	public void credits() {
 
+	}
+	
+	public void backToMainMenu() {
+		removePanel(currentPanel);
+		currentPanel = mainMenuPanel;
+		addPanel(currentPanel);
+	}
+	
+	//called after a new keybinding is done
+	public void KeyBindingDone() {
+		removePanel(currentPanel);
+		currentPanel = controlsMenuPanel;
+		addPanel(currentPanel);
 	}
 
 	public void removePanel(UIPanel p) {

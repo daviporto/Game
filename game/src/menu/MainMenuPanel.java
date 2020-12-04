@@ -39,7 +39,10 @@ public class MainMenuPanel extends UIPanel {
 		b = buttonFactory(new Vector2i(20, 180), DEFAULTSIZE, "   Controls");
 		b.setActinoListener(() -> menuController.controls());
 		addComponent(b);
-		addComponent(buttonFactory(new Vector2i(20, 10), DEFAULTSIZE, "   continue"));
+		b = buttonFactory(new Vector2i(20, 10), DEFAULTSIZE, "   continue");
+		b.setActinoListener(() -> menuController.continueGame());
+		addComponent(b);
+		
 		b = buttonFactory(new Vector2i(20, 240), DEFAULTSIZE, "   Save Game");
 		b.setActinoListener(() -> menuController.save());
 		addComponent(b);

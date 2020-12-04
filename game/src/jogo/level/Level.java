@@ -360,7 +360,6 @@ public class Level extends Layer {
 	private void remove() {
 		for (int i = 0; i < entities.size(); i++) {
 			if (entities.get(i).isRemoved()) {
-				Logger.getGlobal().info(entities.get(i).getClass().toString());
 				player.addLevel(entities.get(i).getXpAmount());
 				entities.remove(i);
 			}

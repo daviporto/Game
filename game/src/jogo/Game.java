@@ -72,16 +72,10 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		level = Level.teste;
 		level.setUIManeger(uiManager);
 		addLayer(level);
-		TileCoordinate playerSpawn = new TileCoordinate(16, 16);
-		player = new Player("Davi", playerSpawn.x(), playerSpawn.y(), key, messageManager, uiManager);
-		level.add(player);
 		font = new Font();
-		addKeyListener(key);
-		messageManager = new MessageEventsManager(player, uiManager);
-		level.addMessageManager(messageManager);
-		level.addLocationTrigerredEvents();
-		menuController = new MenuController(this);
-
+		
+		reset();
+		
 		Mouse mouse = new Mouse(this);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
@@ -100,8 +94,26 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		start();
 	}
 	
-	public void newGame() {
+	private void reset() {
+		TileCoordinate playerSpawn = new TileCoordinate(16, 16);
+		player = new Player("Davi", playerSpawn.x(), playerSpawn.y(), key, messageManager, uiManager);
+		level.add(player);
+		addKeyListener(key);
+		messageManager = new MessageEventsManager(player, uiManager);
+		level.addMessageManager(messageManager);
+		level.addLocationTrigerredEvents();
+		menuController = new MenuController(this);
+
 		
+	}
+
+	public void newGame() {
+		reset();
+		pause = false;
+	}
+	
+	public void continueGame() {
+		pause = false;
 	}
 
 	public static int getwindoewidth() {

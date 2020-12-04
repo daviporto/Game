@@ -62,6 +62,12 @@ public class UIButton extends UIComponent {
 		init();
 	}
 	
+	public UIButton(Vector2i position, BufferedImage image) {
+		super(position, new Vector2i(image.getWidth(), image.getHeight()));
+		setImage(image);
+		init();
+	}
+	
 	private void init() {
 		setColor(0xaaaaaa);
 		buttonListener = new UIButtonListener();

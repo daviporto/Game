@@ -1,11 +1,13 @@
 package jogo.entity.mob.player;
 
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import components.Arrays.intArray;
 import components.Objects.DSObject;
+import jogo.entity.mob.Mob.KindofProjectile;
 import jogo.graphics.ui.UIActionListener;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UIManager;
@@ -14,6 +16,7 @@ import jogo.util.Vector2i;
 
 public class UpgradeAbility {
 	private int[] currentLevelAbilities;
+	
 	private UIManager ui;
 	private UIPanel UPAbilitiesPanel;
 	private BufferedImage fireUpgradeImage;
@@ -28,7 +31,7 @@ public class UpgradeAbility {
 	private static final int PANELSIZEY = 150;
 
 	public UpgradeAbility(UIManager ui) {
-		ui = this.ui;
+		this.ui = ui;
 		currentLevelAbilities = new int[3];
 		currentLevelAbilities[0] = currentLevelAbilities[1] = currentLevelAbilities[2] = 0;
 

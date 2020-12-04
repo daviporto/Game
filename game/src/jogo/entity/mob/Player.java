@@ -25,7 +25,6 @@ import jogo.events.EventDispatcher;
 import jogo.events.EventListener;
 import jogo.events.messageEvents.LevelTrigered;
 import jogo.events.messageEvents.MessageEventsManager;
-import jogo.events.types.AbilityChosedEvent;
 import jogo.events.types.MousePressedEvent;
 import jogo.events.types.MouseReleasedEvent;
 import jogo.graphics.AnimatedSprite;
@@ -122,7 +121,7 @@ public class Player extends Mob implements EventListener {
 		updateLevel();
 
 		playerNextLevelChoice = new PlayerNextLevelChoice(ui);
-		playerAbilities = new PlayerAbilities(this);
+		playerAbilities = new PlayerAbilities(ui, currentAbility);
 		playerAbilities.drawHablities();
 		upgradeAbility = new UpgradeAbility(ui);
 	}
@@ -147,7 +146,7 @@ public class Player extends Mob implements EventListener {
 		return o;
 	}
 
-	public static  Player load(DSObject o, Level level, UIManager ui) {
+	public static Player load(DSObject o, Level level, UIManager ui) {
 		Player player = new Player();
 		player.setLevel(level);
 		player.name = o.popString().getString();
@@ -172,20 +171,19 @@ public class Player extends Mob implements EventListener {
 		player.blockShooting = o.popField().getBoolean();
 		player.setUIManager(ui);
 		player.createUIConponents();
-		
 
-		player.playerNextLevelChoice = new PlayerNextLevelChoice(ui);
-		player.playerAbilities = new PlayerAbilities(player);
+		player.playerNextLevelChoice = new PlayerNextLevelChoice(player.ui);
+		player.playerAbilities = new PlayerAbilities(player.ui, player.currentAbility);
+		player.upgradeAbility = new UpgradeAbility(player.ui);
 		player.playerAbilities.drawHablities();
-		player.upgradeAbility = new UpgradeAbility(ui);
-		
+
 		return player;
 	}
 
 	public String getNmae() {
 		return name;
 	}
-	
+
 	public void setUIManager(UIManager ui) {
 		this.ui = ui;
 	}
@@ -224,28 +222,27 @@ public class Player extends Mob implements EventListener {
 	}
 
 	public void addLevel(int amount) {
-		Logger.getGlobal().info("came here amount = " + Integer.toString(amount));
 		xp += amount;
+		updateLevel();
 	}
 
 	public void onEvent(Event event) {
 		EventDispatcher dispatcher = new EventDispatcher(event);
 		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
-		dispatcher.dispatch(Event.Type.ABILITY_CHOSED, (Event e) -> Abilitychosed((AbilityChosedEvent) e));
 	}
 
-	public boolean Abilitychosed(AbilityChosedEvent e) {
+	public boolean Abilitychosed(KindofProjectile k) {
 //		System.out.println(currentAbility);
-		if (e.getWichAbility() == PlayerAbilities.wichAbiliti.FIRE
+		if (k == KindofProjectile.FIREBOOL
 				&& playerAbilities.getCurrentLevelAbiliti(PlayerAbilities.MASKFIREABILITY) > 0)
 			currentAbility = KindofProjectile.FIREBOOL;
 
-		else if (e.getWichAbility() == PlayerAbilities.wichAbiliti.ICE
+		else if (k == KindofProjectile.ICEBOOL
 				&& playerAbilities.getCurrentLevelAbiliti(PlayerAbilities.MASKICEABILITY) > 0)
 			currentAbility = KindofProjectile.ICEBOOL;
 
-		else if (e.getWichAbility() == PlayerAbilities.wichAbiliti.POISON
+		else if (k == KindofProjectile.POISONBOOL
 				&& playerAbilities.getCurrentLevelAbiliti(PlayerAbilities.MASKPOISONABILITY) > 0)
 			currentAbility = KindofProjectile.POISONBOOL;
 
@@ -309,21 +306,28 @@ public class Player extends Mob implements EventListener {
 		else
 			anim = 0;
 
-		if (Keyboard.presed(KeyEvent.VK_UP) || Keyboard.presed(KeyEvent.VK_W)){
+		if (Keyboard.presed(Keyboard.fireAbility))
+			currentAbility = KindofProjectile.FIREBOOL;
+		else if (Keyboard.presed(Keyboard.iceAbility))
+			currentAbility = KindofProjectile.ICEBOOL;
+		else if (Keyboard.presed(Keyboard.poisoneAbility))
+			currentAbility = KindofProjectile.POISONBOOL;
+
+		if (Keyboard.presed(Keyboard.foward)) {
 			animSprite = up;
 			yaxis -= speed;
 
 		}
-		if (Keyboard.presed(KeyEvent.VK_DOWN) || Keyboard.presed(KeyEvent.VK_S)){
+		if (Keyboard.presed(Keyboard.backward)) {
 			animSprite = down;
 			yaxis += speed;
 		}
-		if (Keyboard.presed(KeyEvent.VK_LEFT) || Keyboard.presed(KeyEvent.VK_A)) {
+		if (Keyboard.presed(Keyboard.left)) {
 			animSprite = left;
 			xaxis -= speed;
 
 		}
-		if (Keyboard.presed(KeyEvent.VK_RIGHT) || Keyboard.presed(KeyEvent.VK_D)){
+		if (Keyboard.presed(Keyboard.right)) {
 			animSprite = right;
 			xaxis += speed;
 		}
