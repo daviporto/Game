@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import components.Fields.FieldInt;
+import components.Objects.DSObject;
+import components.dataBase.DSDataBase;
 import jogo.events.EventListener;
 
 public class Keyboard implements KeyListener {
@@ -23,9 +26,34 @@ public class Keyboard implements KeyListener {
 	public static int fireAbility = KeyEvent.VK_1;
 	public static int iceAbility = KeyEvent.VK_2;
 	public static int poisoneAbility = KeyEvent.VK_3;
+	  
 
 	public Keyboard(EventListener listener) {
 		this.listener = listener;
+	}
+	
+	public static DSObject save() {
+		DSObject keyBindins = new DSObject("keyBindins");
+		keyBindins.pushField(new FieldInt("foward", foward));
+		keyBindins.pushField(new FieldInt("backward", backward));
+		keyBindins.pushField(new FieldInt("left", left));
+		keyBindins.pushField(new FieldInt("right", right));
+		keyBindins.pushField(new FieldInt("fireAbility", fireAbility));
+		keyBindins.pushField(new FieldInt("iceAbility", iceAbility));
+		keyBindins.pushField(new FieldInt("poisoneAbility", poisoneAbility));
+		return keyBindins;
+	}
+	
+	public static void load() {
+		DSDataBase db = DSDataBase.deserializeFromFile("saves/keys");
+		DSObject o = db.popObject();
+		foward = o.popField().getInt();
+		backward = o.popField().getInt();
+		left = o.popField().getInt();
+		right = o.popField().getInt();
+		fireAbility = o.popField().getInt();
+		iceAbility = o.popField().getInt();
+		poisoneAbility = o.popField().getInt();
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -59,7 +87,6 @@ public class Keyboard implements KeyListener {
 
 	public void keyTyped(KeyEvent e) {
 		if(waitingForText) {
-			Logger.getGlobal().info("waiting for " + e.getKeyChar());
 			keysTyped.add(e);
 		}
 	}

@@ -3,9 +3,13 @@ package menu;
 import static jogo.util.ColorUtils.getColor;
 import static menu.MenuButtonFactory.buttonFactory;
 
+import java.awt.event.KeyEvent;
+
+import components.dataBase.DSDataBase;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UILabel;
 import jogo.graphics.ui.UIPanel;
+import jogo.input.Keyboard;
 import jogo.util.Vector2i;
 
 public class ControlsMenuPanel extends UIPanel {
@@ -35,10 +39,15 @@ public class ControlsMenuPanel extends UIPanel {
 		UILabel title = new UILabel(new Vector2i(70, 70), "to change clik on the button");
 		addComponent(title);
 
-		Vector2i bottonHalf = new Vector2i(215, heightP - DEFAULTSIZE.y - 10);
+		Vector2i bottonHalf = new Vector2i(10, heightP - DEFAULTSIZE.y - 10);
 		UIButton voltar = buttonFactory(bottonHalf, DEFAULTSIZE, "MAIN MENU");
 		voltar.setActinoListener(() -> menuController.backToMainMenu());
 		addComponent(voltar);
+		
+		Vector2i salvar_position = new Vector2i(400, heightP - DEFAULTSIZE.y - 10);
+		UIButton salvar = buttonFactory(salvar_position, DEFAULTSIZE, "SALVAR");
+		salvar.setActinoListener(() -> save());
+		addComponent(salvar);
 
 		foward = buttonFactory(new Vector2i(0, 20 + DEFAULTSIZE.y * 1), DEFAULTSIZE, "foward = W");
 		left = buttonFactory(new Vector2i(0, 20 + DEFAULTSIZE.y * 2), DEFAULTSIZE, "left = A");
@@ -66,6 +75,23 @@ public class ControlsMenuPanel extends UIPanel {
 		addComponent(fireAbility);
 		addComponent(iceAbility);
 		addComponent(poisonAbility);
+	}
+
+	private void save() {
+		DSDataBase keyBindin = new DSDataBase("keyBindin");
+		keyBindin.pushObject(Keyboard.save());
+		keyBindin.serializeToFile("saves/keys");
+	}
+
+	public void updateButtonText() {
+		foward.setText(foward.getText().substring(0, foward.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.foward));
+		left.setText(left.getText().substring(0, left.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.left));
+		right.setText(right.getText().substring(0, right.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.right));
+		backward.setText(backward.getText().substring(0, backward.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.backward));
+		fireAbility.setText(fireAbility.getText().substring(0, fireAbility.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.fireAbility));
+		iceAbility.setText(iceAbility.getText().substring(0, iceAbility.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.iceAbility));
+		poisonAbility.setText(poisonAbility.getText().substring(0, poisonAbility.getText().lastIndexOf(' ')) + KeyEvent.getKeyText(Keyboard.poisoneAbility));
+		
 	}
 
 }

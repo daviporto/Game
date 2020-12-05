@@ -33,7 +33,6 @@ public class UpgradeAbility {
 	public UpgradeAbility(UIManager ui) {
 		this.ui = ui;
 		currentLevelAbilities = new int[3];
-		currentLevelAbilities[0] = currentLevelAbilities[1] = currentLevelAbilities[2] = 0;
 
 		Vector2i upPosition = new Vector2i(180, 150);
 		Vector2i upSize = new Vector2i(PANELSIZEX, PANELSIZEY);

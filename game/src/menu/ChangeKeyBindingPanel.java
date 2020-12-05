@@ -1,6 +1,10 @@
 package menu;
 
 import java.awt.event.KeyEvent;
+import java.util.logging.Logger;
+
+import javax.sound.sampled.ReverbType;
+import javax.swing.text.JTextComponent.KeyBinding;
 
 import jogo.Game;
 import jogo.graphics.ui.UIButton;
@@ -23,7 +27,7 @@ public class ChangeKeyBindingPanel extends UIPanel {
 		setSize(new Vector2i(400, 200));
 		String baseLabelTxt = b.getText();
 		baseLabelTxt.substring(0, baseLabelTxt.indexOf(" "));
-		addComponent(new UILabel(new Vector2i(10, 10), "digite a nova tecla para" + baseLabelTxt));
+		addComponent(new UILabel(new Vector2i(10, 10), "digite a nova tecla para " + baseLabelTxt));
 		change = new UILabel(new Vector2i(50, 70), baseLabelTxt.substring(0, baseLabelTxt.indexOf(' ')) + " = ");
 		addComponent(change);
 		Keyboard.clearTypedText();
@@ -41,9 +45,21 @@ public class ChangeKeyBindingPanel extends UIPanel {
 			KeyEvent e = Keyboard.keysTyped.get(0);
 			Keyboard.clearTypedText();
 			String buttonText = button.getText();
+			rebind(buttonText.substring(0, buttonText.indexOf('=')).trim(), KeyEvent.getExtendedKeyCodeForChar(e.getKeyChar()));
 			button.setText(buttonText.substring(0, buttonText.lastIndexOf(' ')).concat(" " + e.getKeyChar()));
 			menuController.KeyBindingDone();
 		}
+		
+	}
+	
+	private void rebind(String txt, int keycode) {
+		if(txt.equals("foward")) Keyboard.foward = keycode;
+		else if(txt.equals("backward")) Keyboard.backward = keycode;
+		else if(txt.equals("left")) Keyboard.left = keycode;
+		else if(txt.equals("right")) Keyboard.right = keycode;
+		else if(txt.equals("ice Ability")) Keyboard.iceAbility = keycode;
+		else if(txt.equals("fire Ability")) Keyboard.fireAbility = keycode;
+		else if(txt.equals("poison Ability")) Keyboard.poisoneAbility = keycode;
 		
 	}
 

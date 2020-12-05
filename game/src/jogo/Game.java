@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.text.JTextComponent.KeyBinding;
 
 import components.Fields.FieldShort;
 import components.Objects.DSObject;
@@ -91,6 +92,8 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		frame.setVisible(true);
 		messageManager.newLevel(0);// add events triggered at level 0
 //		menuController.addContinueButton();
+		Keyboard.load();
+		menuController.updateButtonText();
 		start();
 	}
 	
@@ -103,8 +106,6 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		level.addMessageManager(messageManager);
 		level.addLocationTrigerredEvents();
 		menuController = new MenuController(this);
-
-		
 	}
 
 	public void newGame() {
@@ -142,7 +143,6 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		
 		level.pushField(new FieldShort("levelID", levelID));
 		db.pushObject(level);
-		db.enableDebbug();
 		db.serializeToFile("saves/save");
 	}
 	
@@ -154,7 +154,6 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 			level = Level.teste;
 		player = Player.load(db.getAndRemoveObject("player"), level, uiManager);
 		level.setPlayer(player);
-		db.enableDebbug();
 		level.load(db);
 	}
 

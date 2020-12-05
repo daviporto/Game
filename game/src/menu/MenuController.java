@@ -32,6 +32,10 @@ public class MenuController {
 		uiManager.addPanel(mainMenuPanel);
 		currentPanel = mainMenuPanel;
 	}
+	
+	public void updateButtonText() {
+		controlsMenuPanel.updateButtonText();
+	}
 
 	public void render(Graphics g) {
 		menuFrame.render();
