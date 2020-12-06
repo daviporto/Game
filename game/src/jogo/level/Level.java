@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 
 import components.Objects.DSObject;
 import components.dataBase.DSDataBase;
@@ -15,29 +14,31 @@ import jogo.entity.Entity;
 import jogo.entity.mob.Dummy;
 import jogo.entity.mob.Mob;
 import jogo.entity.mob.Mob.KindofProjectile;
-import jogo.entity.mob.usingstar.Mage;
-import jogo.entity.mob.usingstar.Vampire;
-import jogo.entity.mob.usingstar.Witch;
 import jogo.entity.mob.Player;
 import jogo.entity.mob.PumpkinHead;
 import jogo.entity.mob.Shooter;
+import jogo.entity.mob.usingstar.Mage;
+import jogo.entity.mob.usingstar.Vampire;
+import jogo.entity.mob.usingstar.Witch;
 import jogo.entity.particle.Particle;
 import jogo.entity.projectile.Projectile;
 import jogo.entity.spawner.ParticleSpawner;
 import jogo.events.Event;
-import jogo.events.messageEvents.MessageEventsManager;
+import jogo.events.playerEvents.PlayerEventsManager;
 import jogo.graphics.Screen;
 import jogo.graphics.layers.Layer;
 import jogo.graphics.ui.UIManager;
 import jogo.level.tile.Tile;
 import jogo.util.Vector2i;
+import menu.MenuController;
 
 public class Level extends Layer {
 	protected int width, height;
 	protected int[] tilesInt;
 	protected int[] tiles;
 	protected int tile_size;
-	protected MessageEventsManager messagesManager;
+	protected PlayerEventsManager playerEventsMannager;
+	private MenuController menuController;
 	protected UIManager ui;
 
 	public enum Levels {
@@ -72,8 +73,8 @@ public class Level extends Layer {
 		return null;
 	}
 
-	public void addMessageManager(MessageEventsManager m) {
-		messagesManager = m;
+	public void addMessageManager(PlayerEventsManager m) {
+		playerEventsMannager = m;
 	}
 
 	public void RenderCenario(Screen screen) {
@@ -94,12 +95,11 @@ public class Level extends Layer {
 	public Level(String path) {
 		loadLevel(path);
 		generateLevel();
-
 	}
 
-	public DSDataBase save() {
-		DSDataBase db = new DSDataBase("level save");
-
+	
+	public DSDataBase save(DSDataBase db) {
+		
 		db.pushObject(player.save());
 
 		for (Entity e : entities) {
@@ -108,6 +108,10 @@ public class Level extends Layer {
 		}
 
 		return db;
+	}
+	public DSDataBase save() {
+		DSDataBase db = new DSDataBase("level save");
+		return save(db);
 	}
 
 	public void load(DSDataBase db) {
@@ -131,6 +135,20 @@ public class Level extends Layer {
 		}
 		
 	}
+	
+	public void saveCheckPoint(String name) {
+		DSDataBase db = new DSDataBase(name);
+		save(db);
+		db.serializeToFile("saves/"+ name);
+	}
+	
+	public void loadCheckPonint(String name) {
+		DSDataBase db = DSDataBase.deserializeFromFile("saves/" + name);
+		if(db == null) db = DSDataBase.deserializeFromFile("saves/begin");
+		player = Player.load(db.getAndRemoveObject("player"), this, ui);
+
+		load(db);
+	}
 
 	public int getPlayerx() {
 		return player.getX();
@@ -139,7 +157,7 @@ public class Level extends Layer {
 	public int getPlayerY() {
 		return player.getY();
 	}
-
+	
 	protected void loadLevel(String path) {
 
 	}
@@ -376,10 +394,9 @@ public class Level extends Layer {
 				particles.remove(i);
 
 		}
-		for (int i = 0; i < players.size(); i++) {
-			if (player.isRemoved())
-				players.remove(i);
-
+		
+		if (player.isRemoved()) {
+//			menuController.playerDied();
 		}
 	}
 
@@ -553,6 +570,14 @@ public class Level extends Layer {
 
 	public void setPlayer(Player player) {
 		this.player = player;
+	}
+
+	public void addCheckPoints() {
+
+	}
+	
+	public void setMenuController(MenuController menuController) {
+		this.menuController = menuController;
 	}
 
 }

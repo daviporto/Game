@@ -10,18 +10,15 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.swing.JFrame;
-import javax.swing.text.JTextComponent.KeyBinding;
 
 import components.Fields.FieldShort;
 import components.Objects.DSObject;
 import components.dataBase.DSDataBase;
-import components.string.DSString;
 import jogo.entity.mob.Player;
 import jogo.events.Event;
-import jogo.events.messageEvents.MessageEventsManager;
+import jogo.events.playerEvents.PlayerEventsManager;
 import jogo.graphics.Font;
 import jogo.graphics.Screen;
 import jogo.graphics.layers.Layer;
@@ -49,7 +46,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private Keyboard key;
 	private Level level;
 	private Player player;
-	private MessageEventsManager messageManager;
+	private PlayerEventsManager messageManager;
 	private UIManager uiManager;
 	private MenuController menuController;
 	private boolean running = false;
@@ -74,9 +71,9 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		level.setUIManeger(uiManager);
 		addLayer(level);
 		font = new Font();
-		
+
 		reset();
-		
+
 		Mouse mouse = new Mouse(this);
 		addMouseListener(mouse);
 		addMouseMotionListener(mouse);
@@ -95,25 +92,40 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		Keyboard.load();
 		menuController.updateButtonText();
 		start();
+		level.saveCheckPoint("begin");
 	}
-	
+
 	private void reset() {
 		TileCoordinate playerSpawn = new TileCoordinate(16, 16);
 		player = new Player("Davi", playerSpawn.x(), playerSpawn.y(), key, messageManager, uiManager);
 		level.add(player);
 		addKeyListener(key);
-		messageManager = new MessageEventsManager(player, uiManager);
+		messageManager = new PlayerEventsManager(player, uiManager);
 		level.addMessageManager(messageManager);
 		level.addLocationTrigerredEvents();
+		level.addCheckPoints();
 		menuController = new MenuController(this);
+		level.setMenuController(menuController);
 	}
 
 	public void newGame() {
 		reset();
 		pause = false;
 	}
-	
+
 	public void continueGame() {
+		pause = false;
+	}
+
+	public void resetLevel() {
+		level.loadCheckPonint("begin");
+		player = level.getPlayer();
+		pause = false;
+	}
+
+	public void lastCheckPoint() {
+		level.loadCheckPonint("lastCheckPoint");
+		player = level.getPlayer();
 		pause = false;
 	}
 
@@ -132,20 +144,20 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	public void addLayer(Layer layer) {
 		layerStack.add(layer);
 	}
-	
+
 	public void save() {
 		DSDataBase db = level.save();
 		DSObject level = new DSObject("level");
-		Level.Levels  witchLevel =  this.level.getLevel();
+		Level.Levels witchLevel = this.level.getLevel();
 		short levelID = -1;
-		if (witchLevel == Levels.Teste1) 
-			levelID =0;
-		
+		if (witchLevel == Levels.Teste1)
+			levelID = 0;
+
 		level.pushField(new FieldShort("levelID", levelID));
 		db.pushObject(level);
 		db.serializeToFile("saves/save");
 	}
-	
+
 	public void load() {
 		DSDataBase db = DSDataBase.deserializeFromFile("saves/save");
 		DSObject o = db.getAndRemoveObject("level");
@@ -155,6 +167,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		player = Player.load(db.getAndRemoveObject("player"), level, uiManager);
 		level.setPlayer(player);
 		level.load(db);
+		pause = false;
 	}
 
 	public synchronized void start() {
@@ -212,15 +225,15 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 	private void update() {
 //		key.update();
-		
-		if(Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
+
+		if (Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
 			pause = pause ? false : true;
 		}
 
 		if (!pause) {
 			if (time > 0)
 				time--;
-			
+
 			uiManager.update();
 			// Update layers here
 			for (int i = 0; i < layerStack.size(); i++) {
@@ -289,8 +302,13 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 	}
 
-	public  void unpause() {
+	public void unpause() {
 		pause = false;
 	}
+	
+	public void pause() {
+		pause =  true;
+	}
+
 
 }

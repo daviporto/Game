@@ -12,11 +12,13 @@ import jogo.entity.mob.Shooter;
 import jogo.entity.mob.usingstar.Mage;
 import jogo.entity.mob.usingstar.Vampire;
 import jogo.entity.mob.usingstar.Witch;
-import jogo.events.messageEvents.LevelTrigered;
-import jogo.events.messageEvents.LocationTrigered;
+import jogo.events.checkPoints.SaveCheckPoint;
+import jogo.events.playerEvents.LevelTrigered;
+import jogo.events.playerEvents.LocationTrigered;
 import jogo.graphics.Screen;
 import jogo.graphics.ui.UITextandNext;
 import jogo.util.Vector2i;
+import menu.MenuController;
 
 public class NivelDeTeste extends Level {
 
@@ -75,8 +77,8 @@ public class NivelDeTeste extends Level {
 		add(PM);
 
 	}
-	
-	public Level.Levels getLevel(){
+
+	public Level.Levels getLevel() {
 		return Levels.Teste1;
 	}
 
@@ -84,40 +86,53 @@ public class NivelDeTeste extends Level {
 		UITextandNext basicatkPanel = new UITextandNext(new Vector2i(150, 20), new Vector2i(500, 100),
 				"bem vindo ao tutorial ", 10);
 		basicatkPanel.addLine("pressione o botão esquerdo do mause para executar ataques básicos");
-		messagesManager.AddEvent(new LevelTrigered(0, basicatkPanel));
+		playerEventsMannager.addMessageEvent(new LevelTrigered(0, basicatkPanel));
 
 		UITextandNext movingPanel = new UITextandNext(new Vector2i(150, 20), new Vector2i(500, 100), "como andar", 10);
 		movingPanel.addLine("para se mover use W A S D ou as setas, voce pode atirar" + " enquanto se move");
-		messagesManager.AddEvent(new LevelTrigered(0, movingPanel));
+		playerEventsMannager.addMessageEvent(new LevelTrigered(0, movingPanel));
 
 		UITextandNext proximaSala = new UITextandNext(new Vector2i(150, 20), new Vector2i(500, 100), "primeiros passos",
 				10);
 		proximaSala.addLine("ande em direção a sala a sua frente");
-		messagesManager.AddEvent(new LevelTrigered(0, proximaSala));
+		playerEventsMannager.addMessageEvent(new LevelTrigered(0, proximaSala));
 
-		messagesManager.AddEvent(new LocationTrigered(new Vector2i(500, 600), new Vector2i(576, 620),
+		playerEventsMannager.addMessageEvent(new LocationTrigered(new Vector2i(500, 600), new Vector2i(576, 620),
 				new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize, "fantasmas",
 						"esses fantasmas vagam pelo mapa aleatoriamente,"
 								+ "eles não te perseguem mas caso voce entre no range deles, esse irão te atacar",
 						10)));
 
-		messagesManager.AddEvent(new LocationTrigered(new Vector2i(950, 1000), new Vector2i(528, 851),
+		playerEventsMannager.addMessageEvent(new LocationTrigered(new Vector2i(950, 1000), new Vector2i(528, 851),
 				new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize,
 						"cabeças de abobora", "essa cabeças de abobora são semelhantes aos fantas"
 								+ "mas so te atacarão caso entre no range deles",
 						10)));
 
-		messagesManager.AddEvent(new LocationTrigered(new Vector2i(1238, 1283), new Vector2i(496, 783),
+		playerEventsMannager.addMessageEvent(new LocationTrigered(new Vector2i(1238, 1283), new Vector2i(496, 783),
 				new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize, "bruxas",
 						"as bruxas são imunes a veneno"
 								+ "e podem te envenenar cuidado!!!, elas diferente dos outros inimigos podem te perseguir"
 								+ "sendo capaz de desviar ate mesmo de paredes",
 						10)));
 
-		messagesManager.AddEvent(new LocationTrigered(new Vector2i(1803, 1875), new Vector2i(784, 834),
+		playerEventsMannager.addMessageEvent(new LocationTrigered(new Vector2i(1803, 1875), new Vector2i(784, 834),
 				new UITextandNext("magos trigemeos",
 						"a frente voce encontrara 3 magos, cada um com um tipo de abilidade"
 								+ "(fogo, gelo e veneno), eles que nem as bruxar irão te perseguir")));
+	}
+
+	public void addCheckPoints() {
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(485, 605), new Vector2i(576, 623)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(940, 1000), new Vector2i(720 ,750)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(940, 1000), new Vector2i(528 ,560)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(1230, 1270), new Vector2i(496, 527)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(1230, 1270), new Vector2i(752, 783)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(1480, 1600), new Vector2i(576, 623)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(1360, 1600), new Vector2i(910, 943)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(1810 ,1864), new Vector2i(784, 831)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(2510 ,2341), new Vector2i(608, 655)));
+		playerEventsMannager.addCheckPointEvent(new SaveCheckPoint(this, new Vector2i(2510 ,2341), new Vector2i(784, 831)));
 	}
 
 	protected void generateLevel() {

@@ -1,13 +1,11 @@
 package jogo.entity.mob.player;
 
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 import components.Arrays.intArray;
 import components.Objects.DSObject;
-import jogo.entity.mob.Mob.KindofProjectile;
 import jogo.graphics.ui.UIActionListener;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UIManager;

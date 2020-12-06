@@ -23,8 +23,8 @@ import jogo.entity.projectile.WizardProjectile;
 import jogo.events.Event;
 import jogo.events.EventDispatcher;
 import jogo.events.EventListener;
-import jogo.events.messageEvents.LevelTrigered;
-import jogo.events.messageEvents.MessageEventsManager;
+import jogo.events.playerEvents.LevelTrigered;
+import jogo.events.playerEvents.PlayerEventsManager;
 import jogo.events.types.MousePressedEvent;
 import jogo.events.types.MouseReleasedEvent;
 import jogo.graphics.AnimatedSprite;
@@ -63,7 +63,7 @@ public class Player extends Mob implements EventListener {
 	private PlayerAbilities playerAbilities;
 	private UpgradeAbility upgradeAbility;
 	private PlayerNextLevelChoice playerNextLevelChoice;
-	private MessageEventsManager messageManager;
+	private PlayerEventsManager messageManager;
 	private String whichLevel;
 	private String textAndLevel;
 
@@ -99,7 +99,7 @@ public class Player extends Mob implements EventListener {
 
 	}
 
-	public Player(String name, int x, int y, Keyboard imput, MessageEventsManager messageManager, UIManager ui) {
+	public Player(String name, int x, int y, Keyboard imput, PlayerEventsManager messageManager, UIManager ui) {
 		this.messageManager = messageManager;
 		this.name = name;
 		this.x = x;
@@ -176,7 +176,7 @@ public class Player extends Mob implements EventListener {
 		player.playerAbilities = new PlayerAbilities(player.ui, player.currentAbility);
 		player.upgradeAbility = new UpgradeAbility(player.ui);
 		player.playerAbilities.drawHablities();
-
+		
 		return player;
 	}
 
@@ -287,6 +287,10 @@ public class Player extends Mob implements EventListener {
 
 	public void update() {
 		time++;
+		
+		if (health <= 0) 
+			removed = true;
+		
 		if (time % 1 == 0 & Keyboard.firstPress(KeyEvent.VK_L)) {
 			xp = xp + 100;
 		}
@@ -482,20 +486,20 @@ public class Player extends Mob implements EventListener {
 
 	}
 
-	public void AddLevelTrigered(MessageEventsManager m) {
-		m.AddEvent(
+	public void AddLevelTrigered(PlayerEventsManager m) {
+		m.addMessageEvent(
 				new LevelTrigered(1, true,
 						new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize, "level up",
 								"voce subiu de nivel, escolha uma"
 										+ "abilidade para desbloquear e um atributo para avançar" + "vida ou mana.",
 								20)));
-		m.AddEvent(new LevelTrigered(1,
+		m.addMessageEvent(new LevelTrigered(1,
 				new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize, "using ability",
 						"Voce desbloqueou uma nova abilidade"
 								+ "para usala clique no botao correspondete a ela, ou aperte 1 para fogo"
 								+ ", 2 gele , ou 3 veneno",
 						18)));
-		m.AddEvent(
+		m.addMessageEvent(
 				new LevelTrigered(1,
 						new UITextandNext(UITextandNext.defoultTextPosition, UITextandNext.defoultTextsize, "",
 								"abilidades tem efeitos especial a de gelo diminui a velocidade"

@@ -1,4 +1,4 @@
-package jogo.events.messageEvents;
+package jogo.events.playerEvents;
 
 import jogo.graphics.ui.UITextandNext;
 
