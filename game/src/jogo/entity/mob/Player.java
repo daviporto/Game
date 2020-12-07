@@ -14,6 +14,7 @@ import components.Fields.FieldInt;
 import components.Objects.DSObject;
 import components.string.DSString;
 import jogo.Game;
+import jogo.audio.AudioClip;
 import jogo.entity.mob.player.PlayerAbilities;
 import jogo.entity.mob.player.PlayerNextLevelChoice;
 import jogo.entity.mob.player.UpgradeAbility;
@@ -279,6 +280,7 @@ public class Player extends Mob implements EventListener {
 			double dx = Mouse.getX() - Game.getwindoewidth() / 2;
 			double dy = Mouse.getY() - Game.getwindowheight() / 2;
 			double direction = Math.atan2(dy, dx);
+			AudioClip.fireBool.play();
 			shoot(x, y, direction, currentAbility);
 			fireRate = WizardProjectile.FIRE_RATE;
 			addOrRemoveMana(-WizardProjectile.MANA_COST);

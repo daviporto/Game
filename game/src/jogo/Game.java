@@ -58,6 +58,8 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 	private List<Layer> layerStack = new ArrayList<Layer>();
+	
+	
 
 	public Game() {
 		Dimension size = new Dimension(width * scale + 240, height * scale);

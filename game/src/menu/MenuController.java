@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import jogo.Game;
+import jogo.audio.AudioClip;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UIManager;
 import jogo.graphics.ui.UIPanel;
@@ -22,8 +23,8 @@ public class MenuController {
 	private UIPanel currentPanel;
 	private final DeadMenuPanel deadMenuPanel;
 
-	public  final static  Color DEFAULTBTNCOLOR = getColor(0x05101010);
-	public final static  Color TRANSPARENT = getColor(0x00000000);
+	public final static Color DEFAULTBTNCOLOR = getColor(0x05101010);
+	public final static Color TRANSPARENT = getColor(0x00000000);
 	public static final Vector2i DEFAULTSIZE = new Vector2i(300, 60);
 
 	public MenuController(Game game) {
@@ -37,7 +38,7 @@ public class MenuController {
 //		currentPanel = deadMenuPanel;
 		addPanel(currentPanel);
 	}
-	
+
 	public void updateButtonText() {
 		controlsMenuPanel.updateButtonText();
 	}
@@ -54,27 +55,33 @@ public class MenuController {
 	}
 
 	public void newGame() {
+		AudioClip.buttonClick.play();
 		game.newGame();
 	}
 
 	public void load() {
+		AudioClip.buttonClick.play();
 		game.load();
 	}
 
 	public void save() {
+		AudioClip.buttonClick.play();
 		game.save();
 
 	}
-	
+
 	public void resetLevel() {
+		AudioClip.buttonClick.play();
 		game.resetLevel();
 	}
-	
+
 	public void lastCheckPoint() {
+		AudioClip.buttonClick.play();
 		game.lastCheckPoint();
 	}
-	
+
 	public void continueGame() {
+		AudioClip.buttonClick.play();
 		game.continueGame();
 	}
 
@@ -82,30 +89,36 @@ public class MenuController {
 		uiManager.removePanel(currentPanel);
 		currentPanel = controlsMenuPanel;
 		uiManager.addPanel(currentPanel);
+		AudioClip.buttonClick.play();
 	}
 
 	public void changeKey(UIButton b) {
+		AudioClip.buttonClick.play();
 		removePanel(currentPanel);
 		currentPanel = new ChangeKeyBindingPanel(b, this);
 		addPanel(currentPanel);
 	}
 
 	public void help() {
+		AudioClip.buttonClick.play();
 
 	}
 
 	public void credits() {
+		AudioClip.buttonClick.play();
 
 	}
-	
+
 	public void backToMainMenu() {
+		AudioClip.buttonClick.play();
 		removePanel(currentPanel);
 		currentPanel = mainMenuPanel;
 		addPanel(currentPanel);
 	}
-	
-	//called after a new keybinding is done
+
+	// called after a new keybinding is done
 	public void KeyBindingDone() {
+		AudioClip.buttonClick.play();
 		removePanel(currentPanel);
 		currentPanel = controlsMenuPanel;
 		addPanel(currentPanel);
@@ -117,6 +130,7 @@ public class MenuController {
 		currentPanel = deadMenuPanel;
 		addPanel(currentPanel);
 	}
+
 	public void removePanel(UIPanel p) {
 		uiManager.removePanel(p);
 	}
@@ -128,6 +142,5 @@ public class MenuController {
 	public Image getImage() {
 		return menuFrame.getImage();
 	}
-
 
 }

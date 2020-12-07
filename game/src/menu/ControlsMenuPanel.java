@@ -6,6 +6,7 @@ import static menu.MenuButtonFactory.buttonFactory;
 import java.awt.event.KeyEvent;
 
 import components.dataBase.DSDataBase;
+import jogo.audio.AudioClip;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UILabel;
 import jogo.graphics.ui.UIPanel;
@@ -78,6 +79,7 @@ public class ControlsMenuPanel extends UIPanel {
 	}
 
 	private void save() {
+		AudioClip.buttonClick.play();
 		DSDataBase keyBindin = new DSDataBase("keyBindin");
 		keyBindin.pushObject(Keyboard.save());
 		keyBindin.serializeToFile("saves/keys");
