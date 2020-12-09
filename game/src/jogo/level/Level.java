@@ -1,6 +1,8 @@
 package jogo.level;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,10 +31,12 @@ import jogo.graphics.Screen;
 import jogo.graphics.layers.Layer;
 import jogo.graphics.ui.UIManager;
 import jogo.level.tile.Tile;
+import jogo.level.tile.VoidTile;
 import jogo.util.Vector2i;
 import menu.MenuController;
 
 public class Level extends Layer {
+	int time = 0;
 	protected int width, height;
 	protected int[] tilesInt;
 	protected int[] tiles;
@@ -40,6 +44,15 @@ public class Level extends Layer {
 	protected PlayerEventsManager playerEventsMannager;
 	private MenuController menuController;
 	protected UIManager ui;
+	private BufferedImage minimapImage;
+	private int[] mapPixels;
+	
+	private BufferedImage offsetMinimapImage;
+	private int[] offsetMapPixels;
+	
+	protected int groundColor = 0x14e441;
+	protected int wallColor = 0x7c2cdc;
+	protected int voidColor = 0;
 
 	public enum Levels {
 		Spawn, Teste1, Teste2
@@ -94,12 +107,12 @@ public class Level extends Layer {
 
 	public Level(String path) {
 		loadLevel(path);
+		generateMiniMap();
 		generateLevel();
 	}
 
-	
 	public DSDataBase save(DSDataBase db) {
-		
+
 		db.pushObject(player.save());
 
 		for (Entity e : entities) {
@@ -109,6 +122,7 @@ public class Level extends Layer {
 
 		return db;
 	}
+
 	public DSDataBase save() {
 		DSDataBase db = new DSDataBase("level save");
 		return save(db);
@@ -120,31 +134,32 @@ public class Level extends Layer {
 			DSObject o = db.objects.get(i);
 			String entityType = o.getName();
 
-			if(entityType.equals("Dummy"))
-				entities.add(Dummy.load(o,this));
-			else if(entityType.equals("Shooter"))
-				entities.add(Shooter.load(o,this));
-			else if(entityType.equals("PumpkinHead"))
-				entities.add(PumpkinHead.load(o,this));
-			else if(entityType.equals("Witch"))
-				entities.add(Witch.load(o,this));
-			else if(entityType.equals("Vampire"))
-				entities.add(Vampire.load(o,this));
-			else if(entityType.equals("Mage"))
-				entities.add(Mage.load(o,this));
+			if (entityType.equals("Dummy"))
+				entities.add(Dummy.load(o, this));
+			else if (entityType.equals("Shooter"))
+				entities.add(Shooter.load(o, this));
+			else if (entityType.equals("PumpkinHead"))
+				entities.add(PumpkinHead.load(o, this));
+			else if (entityType.equals("Witch"))
+				entities.add(Witch.load(o, this));
+			else if (entityType.equals("Vampire"))
+				entities.add(Vampire.load(o, this));
+			else if (entityType.equals("Mage"))
+				entities.add(Mage.load(o, this));
 		}
-		
+
 	}
-	
+
 	public void saveCheckPoint(String name) {
 		DSDataBase db = new DSDataBase(name);
 		save(db);
-		db.serializeToFile("saves/"+ name);
+		db.serializeToFile("saves/" + name);
 	}
-	
+
 	public void loadCheckPonint(String name) {
 		DSDataBase db = DSDataBase.deserializeFromFile("saves/" + name);
-		if(db == null) db = DSDataBase.deserializeFromFile("saves/begin");
+		if (db == null)
+			db = DSDataBase.deserializeFromFile("saves/begin");
 		player = Player.load(db.getAndRemoveObject("player"), this, ui);
 
 		load(db);
@@ -157,7 +172,7 @@ public class Level extends Layer {
 	public int getPlayerY() {
 		return player.getY();
 	}
-	
+
 	protected void loadLevel(String path) {
 
 	}
@@ -180,6 +195,9 @@ public class Level extends Layer {
 	}
 
 	public void update() {
+		time++;
+		if (time % 10 == 0)
+			regenerateMiniMapImage();
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).update();
 		}
@@ -197,6 +215,7 @@ public class Level extends Layer {
 		player.update();
 
 		remove();
+		
 	}
 
 	public boolean mobCollision(Mob m, int x, int y) {
@@ -394,7 +413,7 @@ public class Level extends Layer {
 				particles.remove(i);
 
 		}
-		
+
 		if (player.isRemoved()) {
 //			menuController.playerDied();
 		}
@@ -560,6 +579,25 @@ public class Level extends Layer {
 
 	}
 
+	public void generateMiniMap() {
+		minimapImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		mapPixels = ((DataBufferInt) minimapImage.getRaster().getDataBuffer()).getData();
+		for(int y = 0; y < height; y++ ) {
+			for (int x = 0; x < width; x++) {
+				Tile t = getTile(x, y);
+				if(t instanceof VoidTile)
+					mapPixels[x + y * width] = voidColor;
+				else if(t.solid())
+					mapPixels[x + y * width] = wallColor;
+				else
+					mapPixels[x + y * width] = groundColor;
+			}
+		}
+		offsetMinimapImage = new BufferedImage(30, 30, BufferedImage.TYPE_INT_RGB);
+		offsetMapPixels = ((DataBufferInt) offsetMinimapImage.getRaster().getDataBuffer()).getData();
+		
+	}
+
 	public Tile getTile(Vector2i v) {
 		return getTile(v.getX(), v.getY());
 	}
@@ -575,9 +613,44 @@ public class Level extends Layer {
 	public void addCheckPoints() {
 
 	}
-	
+
 	public void setMenuController(MenuController menuController) {
 		this.menuController = menuController;
+	}
+
+	public void regenerateMiniMapImage() {
+		int xp = player.getX() >> 4;
+		int yp = player.getY() >> 4;
+		
+		for(int y = 0; y < 29; y++ ) {
+			for (int x = 0; x < 29; x++) {
+				int position = x + y * offsetMinimapImage.getWidth();
+				if (position < 0||position >= offsetMinimapImage.getWidth() * offsetMinimapImage.getHeight())
+					continue;
+				int xoffset = x +  xp - 14;
+				if (xoffset < 0) xoffset = 0;
+				int yoffset = y +  yp - 14;
+				if (yoffset < 0) yoffset = 0;
+				offsetMapPixels[position] = mapPixels[xoffset  + yoffset * width];
+			}
+		}
+		offsetMapPixels[15 + 15 * 30] = 0xff0000;
+		
+		for(Entity i: entities) {
+			
+		}
+	}
+	
+	public BufferedImage getMiniMapImage() {
+		return offsetMinimapImage;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+	
+	public int getHeight() {
+		return height;
 	}
 
 }

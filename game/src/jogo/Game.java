@@ -296,8 +296,9 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		// g.fillRect(Mouse.getX() -32, Mouse.gety() -32, 64, 64);
 		// g.draawString("BUtton; " + Mouse.getButon(), Mouse.getX() -32, Mouse.gety()
 		// -32);
-
+		
 		g.setColor(Color.white);
+		g.drawImage(level.getMiniMapImage(), width * scale, height * scale - 200, 240, 200, null);
 		g.drawString("x: " + player.getX() + " y: " + player.getY(), 700, 450);
 		g.dispose();
 		bs.show();
@@ -311,6 +312,5 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	public void pause() {
 		pause =  true;
 	}
-
 
 }

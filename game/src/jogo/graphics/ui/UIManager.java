@@ -2,6 +2,7 @@ package jogo.graphics.ui;
 
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

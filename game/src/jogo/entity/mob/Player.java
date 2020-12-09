@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.logging.Logger;
 
 import components.Fields.FieldBoolean;
 import components.Fields.FieldByte;
@@ -561,53 +560,6 @@ public class Player extends Mob implements EventListener {
 		manaLabel.setColor(0xffffff);
 		manaLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
 		panel.addComponent(manaLabel);
-
-//		button = new UIButton(new Vector2i(10, 350), new Vector2i(100, 30), new UIActionListener() {
-//			public void perform() {
-////				System.out.println("Action Performed!");
-//			}
-//		});
-//		button.setText("Hello");
-//		panel.addComponent(button);
-
-//		try {
-//			image = ImageIO.read(Player.class.getResource("/textures/home.png"));
-//			System.out.println(image.getType());
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//
-//		UIButton imageButton = new UIButton(new Vector2i(10, 360), image, new UIActionListener() {
-//			public void perform() {
-//				System.exit(0);
-//			}
-//		});
-//		imageButton.setButtonListener(new UIButtonListener() {
-//			public void entered(UIButton button) {
-//				button.setImage(ImageUtils.changeBrightness(image, -50));
-//			}
-//
-//			public void exited(UIButton button) {
-//				button.setImage(image);
-//			}
-
-//			blockShooting = ui.blockShooting();
-//			
-//			if(time% 5 == 0) {
-//				updateLevel();
-//			
-//				if(imput.number1) playerAbilities.setCurrentAbility(1);
-//				else if(imput.number2) playerAbilities.setCurrentAbility(2);
-//				else if(imput.number3) playerAbilities.setCurrentAbility(3);
-//			}
-//			public void pressed(UIButton button) {
-//				button.setImage(ImageUtils.changeBrightness(image, 50));
-//			}
-//
-//			public void released(UIButton button) {
-//				button.setImage(image);
-//			}
-//		});
-//		panel.addComponent(imageButton);
+		
 	}
 }
