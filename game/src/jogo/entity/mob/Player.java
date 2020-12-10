@@ -14,6 +14,7 @@ import components.Objects.DSObject;
 import components.string.DSString;
 import jogo.Game;
 import jogo.audio.AudioClip;
+import jogo.entity.mob.player.Inventory;
 import jogo.entity.mob.player.PlayerAbilities;
 import jogo.entity.mob.player.PlayerNextLevelChoice;
 import jogo.entity.mob.player.UpgradeAbility;
@@ -83,6 +84,7 @@ public class Player extends Mob implements EventListener {
 	private UIButton button;
 	private UILabel manaLabel;
 	private UILabel hpLabel;
+	private Inventory inventory;
 
 	private BufferedImage image;
 	UIPanel panel = (UIPanel) new UIPanel(new Vector2i((280) * 3, 0), new Vector2i(80 * 3, 168 * 3)).setColor(0x4f4f4f);
@@ -124,6 +126,7 @@ public class Player extends Mob implements EventListener {
 		playerAbilities = new PlayerAbilities(ui, currentAbility);
 		playerAbilities.drawHablities();
 		upgradeAbility = new UpgradeAbility(ui);
+		inventory = new Inventory(ui);
 	}
 
 	public DSObject save() {
@@ -560,6 +563,7 @@ public class Player extends Mob implements EventListener {
 		manaLabel.setColor(0xffffff);
 		manaLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
 		panel.addComponent(manaLabel);
+	
 		
 	}
 }

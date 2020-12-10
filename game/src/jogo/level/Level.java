@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 import components.Objects.DSObject;
 import components.dataBase.DSDataBase;
@@ -50,7 +51,7 @@ public class Level extends Layer {
 	private BufferedImage offsetMinimapImage;
 	private int[] offsetMapPixels;
 	
-	protected int groundColor = 0x14e441;
+	protected int groundColor = 0x303030;
 	protected int wallColor = 0x7c2cdc;
 	protected int voidColor = 0;
 
@@ -622,8 +623,8 @@ public class Level extends Layer {
 		int xp = player.getX() >> 4;
 		int yp = player.getY() >> 4;
 		
-		for(int y = 0; y < 29; y++ ) {
-			for (int x = 0; x < 29; x++) {
+		for(int y = 0; y < 30; y++ ) {
+			for (int x = 0; x < 30; x++) {
 				int position = x + y * offsetMinimapImage.getWidth();
 				if (position < 0||position >= offsetMinimapImage.getWidth() * offsetMinimapImage.getHeight())
 					continue;
@@ -634,12 +635,21 @@ public class Level extends Layer {
 				offsetMapPixels[position] = mapPixels[xoffset  + yoffset * width];
 			}
 		}
-		offsetMapPixels[15 + 15 * 30] = 0xff0000;
+		offsetMapPixels[15 + 15 * 30] = 0x0000ff;
 		
-		for(Entity i: entities) {
-			
+		
+		for(Entity i: getEntities(player, 14<<4)) {
+			int position = getD(player.getX(), i.getX())+ (getD(player.getY(), i.getY()))  *  30;
+			if (position < 0 || position >= 29*29) continue;
+			offsetMapPixels[position] = 0xff0000;
 		}
 	}
+	
+	 
+	public int getD(int x1, int x2) {
+		return (x2 >> 4) - (x1 >> 4) +15;
+	}
+	
 	
 	public BufferedImage getMiniMapImage() {
 		return offsetMinimapImage;
