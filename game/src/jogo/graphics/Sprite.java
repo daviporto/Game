@@ -12,7 +12,7 @@ public class Sprite {
 	public enum typeParticles{
 		NORMAL, BLOOD, FIRE, SMOKE, YELLOW;
 	}
-
+	
 	
 	public static Sprite grass = new Sprite(16, 0, 0, SpriteSheet.tiles);
 	public static Sprite whiteFlower = new Sprite(16, 1, 0, SpriteSheet.tiles);
@@ -117,6 +117,7 @@ public class Sprite {
 	
 	
 	
+	
 	protected Sprite(SpriteSheet sheet, int width, int height) {
 		
 		SIZE = (width == height) ? width : -1;
@@ -124,7 +125,7 @@ public class Sprite {
 		this.height = height;
 		this.sheet = sheet;
 		
-	}
+	} 
 	
 	
 	public Sprite(int size, int x, int y, SpriteSheet sheet) {

@@ -11,8 +11,8 @@ public class AnimatedSprite extends Sprite{
 	public AnimatedSprite(SpriteSheet sheet, int width, int height, int lenght) {
 		super(sheet, width, height);
 		this.lenght = lenght;
-		sprite = sheet.getSprite()[0];
-		if(lenght > sheet.getSprite().length) System.err.println("Error! lenght of animation is too long");
+		sprite = sheet.getSprites()[0];
+		if(lenght > sheet.getSprites().length) System.err.println("Error! lenght of animation is too long");
 		
 	}
 	
@@ -22,7 +22,7 @@ public class AnimatedSprite extends Sprite{
 		if (frame >= lenght - 1)  frame = 0 ;
 		else frame++;
 
-		sprite =  sheet.getSprite()[frame];
+		sprite =  sheet.getSprites()[frame];
 		}
 	} 
 
@@ -35,10 +35,10 @@ public class AnimatedSprite extends Sprite{
 	}
 
 	public void setFrame(int index) {
-		if(index> sheet.getSprite().length - 1){
+		if(index> sheet.getSprites().length - 1){
 		}
 		
-		sprite = sheet.getSprite()[index];
+		sprite = sheet.getSprites()[index];
 		
 	}
 	

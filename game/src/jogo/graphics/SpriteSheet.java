@@ -100,7 +100,6 @@ public class SpriteSheet {
 	public static SpriteSheet blueMage_right = new SpriteSheet(blueMage,0, 2, 3, 1, 32 );
 	
 	
-	
 
 	
 
@@ -185,6 +184,23 @@ public class SpriteSheet {
 		 
 	}
 	
+	public Sprite[] getSprites(SpriteSheet sheet, int spriteWidth, int spriteHeight, int quantity) {
+		Sprite[] sprites = new Sprite[quantity];
+		int xp = 0;
+		int yp = 0;
+		for(int i = 0; i < quantity; i++) {
+			if(xp + width > sheet.width) {
+				xp = 0;
+				yp += spriteHeight;
+			}
+			
+			sprites[i] = new Sprite(spriteWidth,spriteHeight,  xp, yp, sheet);
+			xp += spriteWidth;
+		}
+		
+		return sprites;
+	}
+	
 	public SpriteSheet(SpriteSheet sheet, int x, int y, int width, int height, int spriteSize,double angle) {
 		int xx = x * spriteSize;
 		int yy = y * spriteSize;
@@ -244,7 +260,7 @@ public class SpriteSheet {
 	}
 	
 	
-	public Sprite[] getSprite() {
+	public Sprite[] getSprites() {
 		return sprites;	
 	}
 	

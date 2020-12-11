@@ -23,9 +23,16 @@ public class Keyboard implements KeyListener {
 	public static int backward = KeyEvent.VK_S;
 	public static int left= KeyEvent.VK_A;
 	public static int right = KeyEvent.VK_D;
-	public static int fireAbility = KeyEvent.VK_1;
-	public static int iceAbility = KeyEvent.VK_2;
-	public static int poisoneAbility = KeyEvent.VK_3;
+	public static int fireAbility = KeyEvent.VK_B;
+	public static int iceAbility = KeyEvent.VK_N;
+	public static int poisoneAbility = KeyEvent.VK_M;
+	public static int item1 = KeyEvent.VK_1;
+	public static int item2 = KeyEvent.VK_2;
+	public static int item3 = KeyEvent.VK_3;
+	public static int item4 = KeyEvent.VK_4;
+	public static int item5 = KeyEvent.VK_5;
+	public static int item6 = KeyEvent.VK_6;
+	
 	  
 
 	public Keyboard(EventListener listener) {

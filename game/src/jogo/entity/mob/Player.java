@@ -126,7 +126,7 @@ public class Player extends Mob implements EventListener {
 		playerAbilities = new PlayerAbilities(ui, currentAbility);
 		playerAbilities.drawHablities();
 		upgradeAbility = new UpgradeAbility(ui);
-		inventory = new Inventory(ui);
+		inventory = new Inventory(ui, this);
 	}
 
 	public DSObject save() {
