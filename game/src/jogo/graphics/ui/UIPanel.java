@@ -11,6 +11,7 @@ public class UIPanel extends UIComponent {
 
 	private List<UIComponent> components = new ArrayList<UIComponent>();
 
+
 	protected UIPanel() {
 		super();
 	}
@@ -55,6 +56,15 @@ public class UIPanel extends UIComponent {
 
 	public void resizeY(int y) {
 		this.size.y = y;
+	}
+	
+
+	public UIComponent getComponentAt(Vector2i point) {
+		for (UIComponent component : components) {
+			if (component.isInside(point))
+				return component;
+		}
+		return null;
 	}
 
 	public void render(Graphics g) {

@@ -8,13 +8,19 @@ import jogo.entity.mob.player.Item;
 import jogo.input.Keyboard;
 import jogo.util.Vector2i;
 
-public class UIInventoryCell extends UIComponent{
+public class UIInventoryCell extends UIComponent implements Cloneable{
 	public final static Vector2i DEFAULTSIZE = new Vector2i(50,50);
 	private Item item;
 	private int keyToListen;
 	
 	public UIInventoryCell(Vector2i position, Vector2i size) {
 		super(position, size);
+		color = new Color(0xff00ff);
+	}
+	
+	public UIInventoryCell(Vector2i position, Vector2i size, Item item) {
+		super(position, size);
+		this.item = item;
 		color = new Color(0xff00ff);
 	}
 	
@@ -29,6 +35,10 @@ public class UIInventoryCell extends UIComponent{
 			item.used();
 		}
 		
+	}
+	
+	public  UIInventoryCell clone() {
+		return new UIInventoryCell(position.sumAndNew(this.offset), DEFAULTSIZE, this.item);
 	}
 	
 	public void setKeyToObserv(int keyToListen) {
@@ -51,5 +61,9 @@ public class UIInventoryCell extends UIComponent{
 	
 	public void setItem(Item item) {
 		this.item = item;
+	}
+
+	public void deleteOffset() {
+		offset.set(0, 0);
 	}
 }

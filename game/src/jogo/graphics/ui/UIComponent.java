@@ -1,5 +1,6 @@
 package jogo.graphics.ui;
 
+import static jogo.util.MathUtils.overlap;
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -16,7 +17,6 @@ public class UIComponent {
 	
 	protected UIComponent() {
 		offset = new Vector2i();
-		
 	}
 	
 	public UIComponent(Vector2i position) {
@@ -36,6 +36,13 @@ public class UIComponent {
 		this.position = position;
 		this.size = size;
 		offset = new Vector2i();
+	}
+	
+	public boolean isInside(Vector2i point) {
+		int cx = position.x + offset.x;
+		int cy = position.y + offset.y;
+		
+		return overlap(point, new Vector2i(cx, cy), size);
 	}
 
 	void init(UIPanel panel) {

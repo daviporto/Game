@@ -1,5 +1,9 @@
 package jogo.util;
 
+import java.awt.event.MouseEvent;
+
+import jogo.events.types.MousePressedEvent;
+
 public class Vector2i {
 
 	public int x, y;
@@ -11,10 +15,20 @@ public class Vector2i {
 	public Vector2i(Vector2i vector) {
 		set(vector.x, vector.y);
 	}
+	
+	public Vector2i (MousePressedEvent e) {
+		set(e.getX(), e.getY());
+	}
+	
 
 	public Vector2i(int x, int y) {
 		set(x, y);
 	}
+	public Vector2i sumAndNew(Vector2i b) {
+		Vector2i result = new Vector2i(this);
+		return result.add(b);
+	}
+	
 
 	public void set(int x, int y) {
 		this.x = x;

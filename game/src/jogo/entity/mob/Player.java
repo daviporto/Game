@@ -190,6 +190,10 @@ public class Player extends Mob implements EventListener {
 	public void setUIManager(UIManager ui) {
 		this.ui = ui;
 	}
+	
+	public Inventory getInventory() {
+		return inventory;
+	}
 
 	public int getMana() {
 		return currentMana;
@@ -295,7 +299,7 @@ public class Player extends Mob implements EventListener {
 		if (health <= 0) 
 			removed = true;
 		
-		if (time % 1 == 0 & Keyboard.firstPress(KeyEvent.VK_L)) {
+		if ( Keyboard.firstPress(KeyEvent.VK_L)) {
 			xp = xp + 100;
 		}
 
@@ -565,5 +569,9 @@ public class Player extends Mob implements EventListener {
 		panel.addComponent(manaLabel);
 	
 		
+	}
+
+	public void setInventoryVisibility(boolean visibility) {
+		inventory.setVisibility(visibility);
 	}
 }

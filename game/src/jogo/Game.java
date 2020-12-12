@@ -47,6 +47,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private Level level;
 	private Player player;
 	private PlayerEventsManager messageManager;
+	private boolean inventoryActive = false;
 	private UIManager uiManager;
 	private MenuController menuController;
 	private boolean running = false;
@@ -226,10 +227,21 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	}
 
 	private void update() {
-//		key.update();
 
 		if (Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
 			pause = pause ? false : true;
+		}
+		
+		if(Keyboard.firstPress(KeyEvent.VK_I)) {			
+			if (!inventoryActive){
+				layerStack.add(player.getInventory());
+				player.setInventoryVisibility(true);
+				inventoryActive = true;
+			}else {
+				layerStack.remove(player.getInventory());
+				player.setInventoryVisibility(false);
+				inventoryActive = false;
+			}
 		}
 
 		if (!pause) {

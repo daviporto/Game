@@ -22,6 +22,13 @@ public class MathUtils {
 		return false;
 	}
 	
+	public static boolean overlap(Vector2i point, Vector2i position, Vector2i size ) {
+		if(point.x > position.x && point.x < position.x + size.x)
+			if(point.y > position.y && point.y < position.y + size.y)
+				return true;
+		return false;
+	}
+	
 	public static int clamp(int value, int min, int max) {
 		if (value < min)
 			return min;
