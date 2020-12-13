@@ -29,6 +29,10 @@ public class Vector2i {
 		return result.add(b);
 	}
 	
+	public Vector2i subtractAndNew(Vector2i b) {
+		Vector2i result = new Vector2i(this);
+		return result.subtract(b);
+	}
 
 	public void set(int x, int y) {
 		this.x = x;

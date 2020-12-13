@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
+import jogo.entity.mob.player.Item;
 import jogo.util.Vector2i;
 
 public class UIPanel extends UIComponent {
@@ -66,6 +67,12 @@ public class UIPanel extends UIComponent {
 		}
 		return null;
 	}
+	
+	public UIComponent popComponent() {
+		if (components.isEmpty())
+			return null;
+		return components.get(components.size() - 1);
+	}
 
 	public void render(Graphics g) {
 		g.setColor(color);
@@ -74,5 +81,7 @@ public class UIPanel extends UIComponent {
 			component.render(g);
 		}
 	}
+	
+	
 
 }

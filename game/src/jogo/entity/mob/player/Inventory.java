@@ -1,34 +1,31 @@
 package jogo.entity.mob.player;
 
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
-import jogo.Game;
 import jogo.entity.mob.Player;
 import jogo.events.Event;
 import jogo.events.EventDispatcher;
 import jogo.events.types.MouseMovedEvent;
 import jogo.events.types.MousePressedEvent;
 import jogo.events.types.MouseReleasedEvent;
-import jogo.graphics.Screen;
 import jogo.graphics.layers.Layer;
 import jogo.graphics.ui.UIInventoryCell;
 import jogo.graphics.ui.UIManager;
 import jogo.graphics.ui.UIPanel;
-import jogo.input.Keyboard;
 import jogo.util.Vector2i;
 
 public class Inventory extends Layer {
 	private UIManager ui;
-	private UIInventoryCell[] cells = new UIInventoryCell[6];
+	private SharedCell[] cells = new SharedCell[6];
 	private UIPanel favoritItemsPanel;
 	private UIPanel inventoryPanel;
 	private Player player;
 	private ArrayList<Item> items = new ArrayList<Item>();
 	private UIInventoryCell from, moving, to;
 	private Item lifePotion = new Item("/items/lifePotion.png", true, 100);
+	private boolean inventoryOpen = false;
 
 	public Inventory(UIManager ui, Player player) {
 		this.ui = ui;
@@ -37,40 +34,44 @@ public class Inventory extends Layer {
 			player.addOrRemoveHealth(40);
 			Logger.getGlobal().info("done");
 		});
-		favoriteItemsInit();
 
 		inventoryPanel = new UIPanel(new Vector2i(100, 200), new Vector2i(530, 210));
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 8; x++) {
+				if(y == 0 && x < 6) {
+					cells[x] = new SharedCell(new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
+						10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y), SharedCell.DEFAULTSIZE);
+					cells[x].setNumberToBeRendered(x + 1, new Vector2i(115, 235));
+					inventoryPanel.addComponent(cells[x]);
+					continue;
+				}
 				inventoryPanel
-						.addComponent(new UIInventoryCell(new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
-								10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y), UIInventoryCell.DEFAULTSIZE));
+				.addComponent(new UIInventoryCell(new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
+						10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y), UIInventoryCell.DEFAULTSIZE));
+					
 			}
 		}
-		UIInventoryCell first = (UIInventoryCell) inventoryPanel.getComponentAt(new Vector2i(20, 20));
-		first.setItem(lifePotion);
+		cells[0].setItem(lifePotion);
 
+		favoriteItemsInit();
 	}
 
 	public void favoriteItemsInit() {
 		favoritItemsPanel = new UIPanel(new Vector2i(170, 440), new Vector2i(400, 80));
 		favoritItemsPanel.setColor(0x10606060);
 
-		cells[0] = new UIInventoryCell(new Vector2i(10, 10), UIInventoryCell.DEFAULTSIZE, Keyboard.item1);
-		cells[1] = new UIInventoryCell(new Vector2i(UIInventoryCell.DEFAULTSIZE.x + 10 * 2, 10),
-				UIInventoryCell.DEFAULTSIZE);
-		cells[2] = new UIInventoryCell(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 2 + 10 * 3, 10),
-				UIInventoryCell.DEFAULTSIZE);
-		cells[3] = new UIInventoryCell(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 3 + 10 * 4, 10),
-				UIInventoryCell.DEFAULTSIZE);
-		cells[4] = new UIInventoryCell(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 4 + 10 * 5, 10),
-				UIInventoryCell.DEFAULTSIZE);
-		cells[5] = new UIInventoryCell(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 5 + 10 * 6, 10),
-				UIInventoryCell.DEFAULTSIZE);
+		cells[0].setPositionOnInventory(new Vector2i(13, 10));
+		cells[1].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x + 13 * 2, 10));
+		cells[2].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 2 + 13 * 3, 10));
+		cells[3].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 3 + 13 * 4, 10));
+		cells[4].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 4 + 13 * 5, 10));
+		cells[5].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 5 + 13 * 6, 10));
+		
+		for(int i = 0; i < cells.length; i++) {
+			favoritItemsPanel.addComponent(cells[i]);
+		}
 
-		for (UIInventoryCell c : cells)
-			favoritItemsPanel.addComponent(c);
 
 		items.add(lifePotion);
 		cells[0].setItem(lifePotion);
@@ -79,7 +80,6 @@ public class Inventory extends Layer {
 	}
 
 	public void onEvent(Event event) {
-		Logger.getGlobal().info("reciving" + event.getType());
 		EventDispatcher dispatcher = new EventDispatcher(event);
 		dispatcher.dispatch(Event.Type.MOUSE_PRESSED, (Event e) -> onMousePressed((MousePressedEvent) e));
 		dispatcher.dispatch(Event.Type.MOUSE_RELEASED, (Event e) -> onMouseReleased((MouseReleasedEvent) e));
@@ -91,20 +91,21 @@ public class Inventory extends Layer {
 		if (from == null || from.getItem() == null)
 			from = null;
 		else
-			moving = new movingCell(new Vector2i(e), UIInventoryCell.DEFAULTSIZE, from.getItem());
+			moving = new MovingCell(new Vector2i(e), UIInventoryCell.DEFAULTSIZE, from.getItem());
 			inventoryPanel.addComponent(moving);
 		return true;
 	}
 
 	public boolean onMouseReleased(MouseReleasedEvent e) {
-		if (from == null)
+		if (moving == null)
 			return true;
 		to = (UIInventoryCell) inventoryPanel.getComponentAt(new Vector2i(e.getX(), e.getY()));
+		
 
-		if (to == null || to.getItem() == null) {
+		if (to != null && to.getItem() == null) {
 			to.setItem(from.getItem());
 			from.setItem(null);
-		} else {
+		} else if(to != null){
 			Item temp = to.getItem();
 			to.setItem(from.getItem());
 			from.setItem(temp);
@@ -120,9 +121,6 @@ public class Inventory extends Layer {
 		return true;
 	}
 
-	public void render(Screen screen) {
-
-	}
 
 	class dinamicCell {
 		private UIInventoryCell cell;
@@ -137,24 +135,80 @@ public class Inventory extends Layer {
 	}
 
 	public void setVisibility(boolean visibility) {
-		if (visibility)
+		if (visibility) {
 			ui.addPanel(inventoryPanel);
-		else
+			inventoryOpen = true;
+		}else {
 			ui.removePanel(inventoryPanel);
+			inventoryOpen = false;
+		}
 
 	}
 	
-	public class movingCell extends UIInventoryCell{
-		public movingCell(Vector2i position, Vector2i size, Item item) {
+	public class MovingCell extends UIInventoryCell{
+		public MovingCell(Vector2i position, Vector2i size, Item item) {
 			super(position, size, item);
 		}
 
 		public void render(Graphics g) {
-//			g.setColor(color);
-//			g.fillRect( position.x - size.x >> 1, position.y - size.y >> 1, size.x, size.y);
 			if(super.getItem() != null) 
 				g.drawImage(getItem().getIcom(), position.x - (size.x >> 1), position.y - (size.y >> 1), size.x, size.y, null);
 			
+		}
+	}
+	
+	public class SharedCell extends UIInventoryCell{
+		private Vector2i positionOnInventory;
+		private Vector2i offsetOnInventory;
+		
+		public SharedCell(Vector2i position, Vector2i size, Item item) {
+			super(position, size, item);
+			offsetOnInventory = new Vector2i(173, 440);
+		}
+		
+		public SharedCell(Vector2i position, Vector2i size) {
+			super(position, size);
+			offsetOnInventory = new Vector2i(173, 440);
+		}
+		
+		public SharedCell(Vector2i position, Vector2i size, int keyToListen) {
+			super(position, size, keyToListen);
+			offsetOnInventory = new Vector2i(173, 440);
+		}
+
+		public void setPositionOnInventory(Vector2i positionOnInventory) {
+			this.positionOnInventory = positionOnInventory;
+		}
+		
+		public void setOffsetOnInventory(Vector2i offsetOnInventory) {
+			this.offsetOnInventory = offsetOnInventory;
+		}
+
+		public void render(Graphics g) {
+			{
+			int x = position.x + offset.x;
+			int y = position.y + offset.y;
+			g.setColor(color);
+			g.fillRect(x, y, size.x, size.y);
+			Logger.getGlobal().info("rendering ever at " + y);
+			
+			if (super.getItem() != null)
+				g.drawImage(super.getItem().getIcom(), x, y, size.x, size.y, null);
+			}
+			
+			if(inventoryOpen) {
+				if (super.getNumberToBeRendered()!= null)
+					super.getNumberToBeRendered().render(g);
+				
+				int x = positionOnInventory.x + offsetOnInventory.x;
+				int y = positionOnInventory.y + offsetOnInventory.y;
+				g.setColor(color);
+				g.fillRect(x, y, size.x, size.y);
+				
+				if (super.getItem() != null)
+					g.drawImage(super.getItem().getIcom(), x, y, size.x, size.y, null);
+				
+			}
 		}
 	}
 
