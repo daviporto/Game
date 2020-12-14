@@ -31,10 +31,6 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 	}
 
 	public void update() {
-		if (item != null && item.getConsumable() && Keyboard.firstPress(keyToListen)) {
-			item.performAction();
-			item.used();
-		}
 
 	}
 
@@ -83,5 +79,9 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 	
 	public UILabel getNumberToBeRendered() {
 		return numberToBeRendered;
+	}
+
+	public int getKeyToListen() {
+		return keyToListen;
 	}
 }

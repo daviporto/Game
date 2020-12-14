@@ -46,7 +46,7 @@ public class ChangeKeyBindingPanel extends UIPanel {
 			Keyboard.clearTypedText();
 			String buttonText = button.getText();
 			rebind(buttonText.substring(0, buttonText.indexOf('=')).trim(), KeyEvent.getExtendedKeyCodeForChar(e.getKeyChar()));
-			button.setText(buttonText.substring(0, buttonText.lastIndexOf(' ')).concat(" " + e.getKeyChar()));
+			button.setText(buttonText.substring(0, buttonText.lastIndexOf('=') - 1).concat(" =" + e.getKeyChar()));
 			menuController.KeyBindingDone();
 		}
 		
@@ -60,6 +60,14 @@ public class ChangeKeyBindingPanel extends UIPanel {
 		else if(txt.equals("ice Ability")) Keyboard.iceAbility = keycode;
 		else if(txt.equals("fire Ability")) Keyboard.fireAbility = keycode;
 		else if(txt.equals("poison Ability")) Keyboard.poisoneAbility = keycode;
+		else if(txt.equals("item1")) Keyboard.item1 = keycode;
+		else if(txt.equals("item2")) Keyboard.item2 = keycode;
+		else if(txt.equals("item3")) Keyboard.item3 = keycode;
+		else if(txt.equals("item4")) Keyboard.item4 = keycode;
+		else if(txt.equals("item5")) Keyboard.item5 = keycode;
+		else if(txt.equals("item6")) Keyboard.item6 = keycode;
+		else if(txt.equals("map")) Keyboard.map = keycode;
+		else if(txt.equals("abilitiesTree")) Keyboard.abilitiesTree = keycode;
 		
 	}
 

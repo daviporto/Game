@@ -23,15 +23,20 @@ public class Keyboard implements KeyListener {
 	public static int backward = KeyEvent.VK_S;
 	public static int left= KeyEvent.VK_A;
 	public static int right = KeyEvent.VK_D;
-	public static int fireAbility = KeyEvent.VK_B;
-	public static int iceAbility = KeyEvent.VK_N;
-	public static int poisoneAbility = KeyEvent.VK_M;
+	
+	public static int fireAbility = KeyEvent.VK_7;
+	public static int iceAbility = KeyEvent.VK_8;
+	public static int poisoneAbility = KeyEvent.VK_9;
+	
 	public static int item1 = KeyEvent.VK_1;
 	public static int item2 = KeyEvent.VK_2;
 	public static int item3 = KeyEvent.VK_3;
 	public static int item4 = KeyEvent.VK_4;
 	public static int item5 = KeyEvent.VK_5;
 	public static int item6 = KeyEvent.VK_6;
+	
+	public static int map = KeyEvent.VK_M;
+	public static int abilitiesTree = KeyEvent.VK_T;
 	
 	  
 
@@ -45,9 +50,21 @@ public class Keyboard implements KeyListener {
 		keyBindins.pushField(new FieldInt("backward", backward));
 		keyBindins.pushField(new FieldInt("left", left));
 		keyBindins.pushField(new FieldInt("right", right));
+		
+		keyBindins.pushField(new FieldInt("item1", item1));
+		keyBindins.pushField(new FieldInt("item2", item2));
+		keyBindins.pushField(new FieldInt("item3", item3));
+		keyBindins.pushField(new FieldInt("item4", item4));
+		keyBindins.pushField(new FieldInt("item5", item5));
+		keyBindins.pushField(new FieldInt("item6", item6));
+		
+		
 		keyBindins.pushField(new FieldInt("fireAbility", fireAbility));
 		keyBindins.pushField(new FieldInt("iceAbility", iceAbility));
 		keyBindins.pushField(new FieldInt("poisoneAbility", poisoneAbility));
+		
+		keyBindins.pushField(new FieldInt("map", map));
+		keyBindins.pushField(new FieldInt("abilitiesTree", abilitiesTree));
 		return keyBindins;
 	}
 	
@@ -58,9 +75,20 @@ public class Keyboard implements KeyListener {
 		backward = o.popField().getInt();
 		left = o.popField().getInt();
 		right = o.popField().getInt();
+		
+		item1 = o.popField().getInt();
+		item2 = o.popField().getInt();
+		item3 = o.popField().getInt();
+		item4 = o.popField().getInt();
+		item5 = o.popField().getInt();
+		item6 = o.popField().getInt();
+		
 		fireAbility = o.popField().getInt();
 		iceAbility = o.popField().getInt();
 		poisoneAbility = o.popField().getInt();
+		
+		map = o.popField().getInt();
+		abilitiesTree = o.popField().getInt();
 	}
 
 	public void keyPressed(KeyEvent e) {

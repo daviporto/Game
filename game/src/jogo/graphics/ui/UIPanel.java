@@ -3,6 +3,7 @@ package jogo.graphics.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import jogo.entity.mob.player.Item;
@@ -77,8 +78,13 @@ public class UIPanel extends UIComponent {
 	public void render(Graphics g) {
 		g.setColor(color);
 		g.fillRect(position.x, position.y, size.x, size.y);
-		for (UIComponent component : components) {
-			component.render(g);
+		try {
+			for (UIComponent component : components) {
+				component.render(g);
+			}	
+		}catch (ConcurrentModificationException e) {
+			//donsen't make any sense but is java 
+			e.printStackTrace();
 		}
 	}
 	

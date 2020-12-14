@@ -55,6 +55,8 @@ public class Player extends Mob implements EventListener {
 	private int xpToNextLevel;
 	private int time;
 	private int manaRecoverPerSecond, lifeRecoverPerSecond;
+	private int healing, healingRate;
+	private int recoveringMana, recoveringManaRate;
 	private boolean shooting = false;
 	private boolean choosingNextLevel = false;
 	private boolean choosingNewAbility = false;
@@ -360,6 +362,15 @@ public class Player extends Mob implements EventListener {
 		}
 
 		if (time % 60 == 0) {
+			if (healing > 0) {
+				addOrRemoveHealth(healingRate);
+				healing--;
+			}
+			
+			if (recoveringMana > 0) {
+				addOrRemoveMana(recoveringManaRate);
+				recoveringMana--;
+			}
 			if (currentMana <= maxMana) {
 				if (currentMana != maxMana)
 					addOrRemoveMana(manaRecoverPerSecond);
@@ -573,5 +584,19 @@ public class Player extends Mob implements EventListener {
 
 	public void setInventoryVisibility(boolean visibility) {
 		inventory.setVisibility(visibility);
+	}
+	
+	//time in seconds
+	//rate will be aplied 1 time per second
+	public void Heal(int time, int rate) {
+		healing = time;
+		healingRate = rate;
+	}
+	
+	//time in seconds
+	//rate will be aplied 1 time per second
+	public void recoverMana(int time, int rate) {
+		recoveringMana = time;
+		recoveringManaRate = rate;
 	}
 }

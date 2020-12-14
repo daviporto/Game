@@ -299,6 +299,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 			}
 			g.drawImage(image, 0, 0, width * scale, height * scale, null);
 			uiManager.render(g);
+			g.drawImage(level.getMiniMapImage(), width * scale, height * scale - 200, 240, 200, null);
 		} else {
 			g.drawImage(menuController.getImage(), 0, 0, frame.getWidth(), frame.getHeight(), null);
 			menuController.render(g);
@@ -310,7 +311,6 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		// -32);
 		
 		g.setColor(Color.white);
-		g.drawImage(level.getMiniMapImage(), width * scale, height * scale - 200, 240, 200, null);
 		g.drawString("x: " + player.getX() + " y: " + player.getY(), 700, 450);
 		g.dispose();
 		bs.show();
