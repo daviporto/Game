@@ -9,12 +9,16 @@ import javax.imageio.ImageIO;
 import jogo.graphics.ui.UIActionListener;
 
 public class Item {
+	private static int lastAvailableId = 0;
+	
 	private int quantity;
+	private int id;
 	private BufferedImage icon;
 	private boolean consumable = false;
 	private UIActionListener actionListener;
 
 	public Item(String path, boolean consumable, int quantity) {
+		this.id = lastAvailableId++;
 		this.quantity = quantity;
 		try {
 			icon = ImageIO.read(this.getClass().getResource(path));
@@ -66,6 +70,10 @@ public class Item {
 
 	public void used() {
 		quantity--;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 }

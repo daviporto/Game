@@ -94,8 +94,8 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 //		menuController.addContinueButton();
 		Keyboard.load();
 		menuController.updateButtonText();
-		start();
 		level.saveCheckPoint("begin");
+		start();
 	}
 
 	private void reset() {
@@ -158,11 +158,13 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 		level.pushField(new FieldShort("levelID", levelID));
 		db.pushObject(level);
+//		db.enableDebbug();
 		db.serializeToFile("saves/save");
 	}
 
 	public void load() {
 		DSDataBase db = DSDataBase.deserializeFromFile("saves/save");
+//		db.enableDebbug();
 		DSObject o = db.getAndRemoveObject("level");
 		short levelID = o.popField().getShort();
 		if (levelID == 0)
@@ -229,7 +231,13 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 	private void update() {
 
 		if (Keyboard.firstPress(KeyEvent.VK_ESCAPE)) {
-			pause = pause ? false : true;
+			if(!pause) {
+				inventoryActive = false;
+				player.getInventory().setVisibility(false);
+				pause = true;
+			}else {
+				pause = !pause;
+			}
 		}
 		
 		if(Keyboard.firstPress(KeyEvent.VK_I)) {			
@@ -312,6 +320,12 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		
 		g.setColor(Color.white);
 		g.drawString("x: " + player.getX() + " y: " + player.getY(), 700, 450);
+		
+		if(player.getMap()) {
+			g.drawImage(level.getMap(), 0,0,frame.getWidth(), frame.getHeight(), null);
+//			g.fillRect((player.getX()>>4) + 65, (player.getY() >> 4) + 75 , 4, 4);
+		}
+		
 		g.dispose();
 		bs.show();
 

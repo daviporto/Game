@@ -1,10 +1,10 @@
 package jogo.entity.mob.player;
 
 import java.awt.Graphics;
-import java.awt.RenderingHints.Key;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
+import components.Fields.FieldInt;
+import components.Objects.DSObject;
 import jogo.entity.mob.Player;
 import jogo.events.Event;
 import jogo.events.EventDispatcher;
@@ -20,67 +20,83 @@ import jogo.util.Vector2i;
 
 public class Inventory extends Layer {
 	private UIManager ui;
-	private SharedCell[] cells = new SharedCell[6];
+	private SharedCell[] sharedCells = new SharedCell[6];
+	private UIInventoryCell[] cells = new UIInventoryCell[24];
 	private UIPanel favoritItemsPanel;
 	private UIPanel inventoryPanel;
 	private Player player;
-	private ArrayList<Item> items = new ArrayList<Item>();
 	private UIInventoryCell from, moving, to;
 	private boolean inventoryOpen = false;
 
-	private Item lifePotion;
-	private Item recoverLifePotion;
-	private Item manaPotion;
-	private Item recoverManaPotion;
-	
+	private static Item lifePotion = new Item("/items/lifePotion.png", true, 5);
+	private static Item recoverLifePotion = new Item("/items/recoverLifePotion.png", true, 5);
+	private static Item manaPotion = new Item("/items/manaPotion.png", true, 5);
+	private static Item recoverManaPotion = new Item("/items/recoverManaPotion.png", true, 5);
+
+	private static ArrayList<Item> items = new ArrayList<Item>();
+
+	static {
+		items.add(lifePotion);
+		items.add(recoverLifePotion);
+		items.add(recoverManaPotion);
+		items.add(manaPotion);
+	}
+
+	private Inventory() {
+		inventoryPanel = new UIPanel(new Vector2i(100, 200), new Vector2i(530, 210));
+	}
+
 	public Inventory(UIManager ui, Player player) {
 		this.ui = ui;
 		this.player = player;
-		initializeItems();
-		
+		setActionListiners();
 
 		inventoryPanel = new UIPanel(new Vector2i(100, 200), new Vector2i(530, 210));
 
+		initiateCells();
+		sharedCells[0].setItem(lifePotion);
+		sharedCells[1].setItem(manaPotion);
+		sharedCells[2].setItem(recoverManaPotion);
+		sharedCells[3].setItem(recoverLifePotion);
+
+	}
+
+	public void initiateCells() {
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 8; x++) {
 				if (y == 0 && x < 6) {
-					cells[x] = new SharedCell(new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
-							10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y), SharedCell.DEFAULTSIZE);
-					cells[x].setNumberToBeRendered(x + 1, new Vector2i(115, 235));
-					inventoryPanel.addComponent(cells[x]);
-					continue;
+					cells[x + y * 8] = new SharedCell(
+							new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
+									10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y),
+							SharedCell.DEFAULTSIZE, x + y * 8);
+					sharedCells[x + y * 8] = (SharedCell) cells[x + y * 8];
+					sharedCells[x].setNumberToBeRendered(x + 1, new Vector2i(115, 235));
+				} else {
+					cells[x + y * 8] = new UIInventoryCell(
+							new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
+									10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y),
+							UIInventoryCell.DEFAULTSIZE, x + y * 8);
 				}
-				inventoryPanel
-						.addComponent(new UIInventoryCell(new Vector2i(10 + x * UIInventoryCell.DEFAULTSIZE.x + 15 * x,
-								10 + y * UIInventoryCell.DEFAULTSIZE.y + 15 * y), UIInventoryCell.DEFAULTSIZE));
 
+				inventoryPanel.addComponent(cells[x + y * 8]);
 			}
 		}
-		cells[0].setItem(lifePotion);
-		cells[1].setItem(manaPotion);
-		cells[2].setItem(recoverManaPotion);
-		cells[3].setItem(recoverLifePotion);
-
 		favoriteItemsInit();
 	}
 
-	private void initializeItems() {
-		lifePotion = new Item("/items/lifePotion.png", true, 5);
+	private void setActionListiners() {
 		lifePotion.setActionListener(() -> {
 			player.addOrRemoveHealth(40);
 		});
-		
-		recoverLifePotion = new Item("/items/recoverLifePotion.png", true, 5);
+
 		recoverLifePotion.setActionListener(() -> {
 			player.Heal(10, 3);
 		});
-		
-		manaPotion = new Item("/items/manaPotion.png", true, 5);
+
 		manaPotion.setActionListener(() -> {
 			player.addOrRemoveMana(35);
 		});
-		
-		recoverManaPotion= new Item("/items/recoverManaPotion.png", true, 5);
+
 		recoverManaPotion.setActionListener(() -> {
 			player.recoverMana(10, 3);
 		});
@@ -90,28 +106,58 @@ public class Inventory extends Layer {
 		favoritItemsPanel = new UIPanel(new Vector2i(170, 440), new Vector2i(400, 80));
 		favoritItemsPanel.setColor(0x10606060);
 
-		cells[0].setPositionOnInventory(new Vector2i(13, 10));
-		cells[1].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x + 13 * 2, 10));
-		cells[2].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 2 + 13 * 3, 10));
-		cells[3].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 3 + 13 * 4, 10));
-		cells[4].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 4 + 13 * 5, 10));
-		cells[5].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 5 + 13 * 6, 10));
+		sharedCells[0].setPositionOnInventory(new Vector2i(13, 10));
+		sharedCells[1].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x + 13 * 2, 10));
+		sharedCells[2].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 2 + 13 * 3, 10));
+		sharedCells[3].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 3 + 13 * 4, 10));
+		sharedCells[4].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 4 + 13 * 5, 10));
+		sharedCells[5].setPositionOnInventory(new Vector2i(UIInventoryCell.DEFAULTSIZE.x * 5 + 13 * 6, 10));
 
-		cells[0].setKeyToObserv(Keyboard.item1);
-		cells[1].setKeyToObserv(Keyboard.item2);
-		cells[2].setKeyToObserv(Keyboard.item3);
-		cells[3].setKeyToObserv(Keyboard.item4);
-		cells[4].setKeyToObserv(Keyboard.item5);
-		cells[5].setKeyToObserv(Keyboard.item6);
+		sharedCells[0].setKeyToObserv(Keyboard.item1);
+		sharedCells[1].setKeyToObserv(Keyboard.item2);
+		sharedCells[2].setKeyToObserv(Keyboard.item3);
+		sharedCells[3].setKeyToObserv(Keyboard.item4);
+		sharedCells[4].setKeyToObserv(Keyboard.item5);
+		sharedCells[5].setKeyToObserv(Keyboard.item6);
 
-		for (int i = 0; i < cells.length; i++) {
-			favoritItemsPanel.addComponent(cells[i]);
+		for (int i = 0; i < sharedCells.length; i++) {
+			favoritItemsPanel.addComponent(sharedCells[i]);
 		}
 
 		items.add(lifePotion);
-		cells[0].setItem(lifePotion);
+		sharedCells[0].setItem(lifePotion);
 		ui.addPanel(favoritItemsPanel);
 
+	}
+
+	public void save(DSObject inventory) {
+
+		for (UIInventoryCell cell : cells) {
+			if (cell.getItem() != null) {
+				inventory.pushField(new FieldInt("cellId", cell.getId()));
+				inventory.pushField(new FieldInt("idemId", cell.getItem().getId()));
+			}
+		}
+	}
+
+	public static Inventory load(DSObject o, UIManager ui, Player player) {
+		Inventory i = new Inventory();
+		i.ui = ui;
+		i.player = player;
+		i.setActionListiners();
+		i.initiateCells();
+		while (!o.fields.isEmpty()) {
+			i.cells[o.popField().getInt()].setItem(getItemById(o.popField().getInt()));
+		}
+		return i;
+	}
+
+	public static Item getItemById(int id) {
+		for (Item i : items) {
+			if (i.getId() == id)
+				return i;
+		}
+		return null;
 	}
 
 	public void onEvent(Event event) {
@@ -127,7 +173,7 @@ public class Inventory extends Layer {
 			from = null;
 		else {
 			moving = new MovingCell(new Vector2i(e), UIInventoryCell.DEFAULTSIZE, from.getItem());
-			inventoryPanel.addComponent(moving);			
+			inventoryPanel.addComponent(moving);
 		}
 		return true;
 	}
@@ -156,7 +202,6 @@ public class Inventory extends Layer {
 		return true;
 	}
 
-
 	public void setVisibility(boolean visibility) {
 		if (visibility) {
 			ui.addPanel(inventoryPanel);
@@ -170,7 +215,7 @@ public class Inventory extends Layer {
 
 	public class MovingCell extends UIInventoryCell {
 		public MovingCell(Vector2i position, Vector2i size, Item item) {
-			super(position, size, item);
+			super(position, size, -1, item);
 		}
 
 		public void render(Graphics g) {
@@ -185,18 +230,18 @@ public class Inventory extends Layer {
 		private Vector2i positionOnInventory;
 		private Vector2i offsetOnInventory;
 
-		public SharedCell(Vector2i position, Vector2i size, Item item) {
-			super(position, size, item);
+		public SharedCell(Vector2i position, Vector2i size, int id, Item item) {
+			super(position, size, id, item);
 			offsetOnInventory = new Vector2i(173, 440);
 		}
 
-		public SharedCell(Vector2i position, Vector2i size) {
-			super(position, size);
+		public SharedCell(Vector2i position, Vector2i size, int id) {
+			super(position, size, id);
 			offsetOnInventory = new Vector2i(173, 440);
 		}
 
-		public SharedCell(Vector2i position, Vector2i size, int keyToListen) {
-			super(position, size, keyToListen);
+		public SharedCell(Vector2i position, Vector2i size, int id, int keyToListen) {
+			super(position, size, id, keyToListen);
 			offsetOnInventory = new Vector2i(173, 440);
 		}
 
@@ -213,7 +258,7 @@ public class Inventory extends Layer {
 					&& Keyboard.firstPress(super.getKeyToListen())) {
 				super.getItem().performAction();
 				super.getItem().used();
-				if(super.getItem().getQuantity() <=0)
+				if (super.getItem().getQuantity() <= 0)
 					super.setItem(null);
 			}
 		}
@@ -222,7 +267,7 @@ public class Inventory extends Layer {
 			{
 				int x = position.x + offset.x;
 				int y = position.y + offset.y;
-				
+
 				g.setColor(color);
 				g.fillRect(x, y, size.x, size.y);
 
@@ -236,7 +281,7 @@ public class Inventory extends Layer {
 
 				int x = positionOnInventory.x + offsetOnInventory.x;
 				int y = positionOnInventory.y + offsetOnInventory.y;
-				
+
 				g.setColor(color);
 				g.fillRect(x, y, size.x, size.y);
 

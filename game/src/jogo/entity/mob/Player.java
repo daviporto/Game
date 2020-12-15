@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.logging.Logger;
+
+import javax.swing.text.JTextComponent.KeyBinding;
 
 import components.Fields.FieldBoolean;
 import components.Fields.FieldByte;
@@ -69,6 +72,7 @@ public class Player extends Mob implements EventListener {
 	private PlayerEventsManager messageManager;
 	private String whichLevel;
 	private String textAndLevel;
+	private boolean map = false;
 
 	private KindofProjectile currentAbility = null;
 
@@ -147,9 +151,11 @@ public class Player extends Mob implements EventListener {
 		o.pushField(new FieldBoolean("choosingNextLevel", choosingNextLevel));
 		o.pushField(new FieldBoolean("choosingNewAbility", choosingNewAbility));
 		o.pushField(new FieldBoolean("blockShooting", blockShooting));
-		upgradeAbility.save(o);
+//		upgradeAbility.save(o);
+		inventory.save(o);
 		return o;
 	}
+
 
 	public static Player load(DSObject o, Level level, UIManager ui) {
 		Player player = new Player();
@@ -181,7 +187,8 @@ public class Player extends Mob implements EventListener {
 		player.playerAbilities = new PlayerAbilities(player.ui, player.currentAbility);
 		player.upgradeAbility = new UpgradeAbility(player.ui);
 		player.playerAbilities.drawHablities();
-		
+//		Logger.getGlobal().info("" + o.popField().getInt());
+		player.inventory = Inventory.load(o, player.ui, player);
 		return player;
 	}
 
@@ -303,6 +310,10 @@ public class Player extends Mob implements EventListener {
 		
 		if ( Keyboard.firstPress(KeyEvent.VK_L)) {
 			xp = xp + 100;
+		}
+		
+		if(Keyboard.firstPress(Keyboard.map)) {
+			map = !map;
 		}
 
 		if (walking)
@@ -598,5 +609,9 @@ public class Player extends Mob implements EventListener {
 	public void recoverMana(int time, int rate) {
 		recoveringMana = time;
 		recoveringManaRate = rate;
+	}
+
+	public boolean getMap() {
+		return map;
 	}
 }

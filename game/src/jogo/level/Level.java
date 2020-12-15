@@ -645,6 +645,10 @@ public class Level extends Layer {
 		}
 	}
 	
+	
+	public BufferedImage getMap() {
+		return minimapImage;
+	}
 	 
 	public int getD(int x1, int x2) {
 		return (x2 >> 4) - (x1 >> 4) +15;

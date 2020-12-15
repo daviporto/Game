@@ -10,23 +10,27 @@ import jogo.util.Vector2i;
 
 public class UIInventoryCell extends UIComponent implements Cloneable {
 	public final static Vector2i DEFAULTSIZE = new Vector2i(50, 50);
+	
+	private int id;
 	private Item item;
 	private int keyToListen;
 	private UILabel numberToBeRendered = null;
 
-	public UIInventoryCell(Vector2i position, Vector2i size) {
+	public UIInventoryCell(Vector2i position, Vector2i size, int id) {
 		super(position, size);
 		color = new Color(0xff00ff);
+		this.id = id;
 	}
 
-	public UIInventoryCell(Vector2i position, Vector2i size, Item item) {
+	public UIInventoryCell(Vector2i position, Vector2i size,int id,  Item item ) {
 		super(position, size);
 		this.item = item;
 		color = new Color(0xff00ff);
+		this.id = id;
 	}
 
-	public UIInventoryCell(Vector2i position, Vector2i size, int keyToListen) {
-		this(position, size);
+	public UIInventoryCell(Vector2i position, Vector2i size, int id, int keyToListen) {
+		this(position, size, id);
 		this.keyToListen = keyToListen;
 	}
 
@@ -45,7 +49,7 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 	}
 
 	public UIInventoryCell clone() {
-		return new UIInventoryCell(position.sumAndNew(this.offset), DEFAULTSIZE, this.item);
+		return new UIInventoryCell(position.sumAndNew(this.offset), DEFAULTSIZE,this.id,  this.item);
 	}
 
 	public void setKeyToObserv(int keyToListen) {
@@ -83,5 +87,9 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 
 	public int getKeyToListen() {
 		return keyToListen;
+	}
+	
+	public int getId() {
+		return id;
 	}
 }
