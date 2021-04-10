@@ -1,12 +1,13 @@
 package jogo.graphics;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
 public class SpriteSheet {
-	int gambiarra;
 	private String path;
 	public final int SIZE;
 	public final int SPRITE_WIDTH, SPRITE_HEIGHT;//sprites
@@ -42,6 +43,57 @@ public class SpriteSheet {
 	public static SpriteSheet player_up = new SpriteSheet(Player,0, 3, 3, 1, 32 );
 	public static SpriteSheet player_left = new SpriteSheet(Player,0, 1, 3, 1, 32 );
 	public static SpriteSheet player_right = new SpriteSheet(Player,0, 2, 3, 1, 32 );
+	
+	public static SpriteSheet players = new SpriteSheet("/textures/entities/players.png", 96 * 4, 128 * 2);
+	public static SpriteSheet player1[] = {
+			new SpriteSheet(players,0, 0, 3, 1, 32),
+			new SpriteSheet(players,0, 3, 3, 1, 32),
+			new SpriteSheet(players,0, 1, 3, 1, 32),
+			new SpriteSheet(players,0, 2, 3, 1, 32)
+	};
+	public static SpriteSheet player2[] = {
+			new SpriteSheet(players,3, 0, 3, 1, 32),
+			new SpriteSheet(players,3, 3, 3, 1, 32),
+			new SpriteSheet(players,3, 1, 3, 1, 32),
+			new SpriteSheet(players,3, 2, 3, 1, 32)
+	};
+	public static SpriteSheet player3[] = {
+			new SpriteSheet(players,6, 0, 3, 1, 32),
+			new SpriteSheet(players,6, 3, 3, 1, 32),
+			new SpriteSheet(players,6, 1, 3, 1, 32),
+			new SpriteSheet(players,6, 2, 3, 1, 32)
+	};
+	public static SpriteSheet player4[] = {
+			new SpriteSheet(players,9, 0, 3, 1, 32),
+			new SpriteSheet(players,9, 3, 3, 1, 32),
+			new SpriteSheet(players,9, 1, 3, 1, 32),
+			new SpriteSheet(players,9, 2, 3, 1, 32)
+	};
+	public static SpriteSheet player5[] = {
+			new SpriteSheet(players,0, 4, 3, 1, 32),
+			new SpriteSheet(players,0, 7, 3, 1, 32),
+			new SpriteSheet(players,0, 5, 3, 1, 32),
+			new SpriteSheet(players,0, 6, 3, 1, 32)
+	};
+	public static SpriteSheet player6[] = {
+			new SpriteSheet(players,3, 4, 3, 1, 32),
+			new SpriteSheet(players,3, 7, 3, 1, 32),
+			new SpriteSheet(players,3, 5, 3, 1, 32),
+			new SpriteSheet(players,3, 6, 3, 1, 32)
+	};
+	public static SpriteSheet player7[] = {
+			new SpriteSheet(players,6, 4, 3, 1, 32),
+			new SpriteSheet(players,6, 7, 3, 1, 32),
+			new SpriteSheet(players,6, 5, 3, 1, 32),
+			new SpriteSheet(players,6, 6, 3, 1, 32)
+	};
+	public static SpriteSheet player8[] = {
+			new SpriteSheet(players,9, 4, 3, 1, 32),
+			new SpriteSheet(players,9, 7, 3, 1, 32),
+			new SpriteSheet(players,9, 5, 3, 1, 32),
+			new SpriteSheet(players,9, 6, 3, 1, 32)
+	};
+	
 	
 	public static SpriteSheet Dummy  = new SpriteSheet("/textures/entities/Dummy.png", 96, 128);
 	public static SpriteSheet Dummy_down = new SpriteSheet(Dummy,0, 0, 3, 1, 32 );
@@ -136,7 +188,7 @@ public class SpriteSheet {
 					
 					}
 				}
-				Sprite sprite = new Sprite(spritePixels, spriteSize, spriteSize);
+				Sprite sprite = new Sprite(spritePixels, spriteSize, spriteSize, sheet);
 				sprites[frame++] = sprite;
 			}
 		}
@@ -276,6 +328,10 @@ public class SpriteSheet {
 		return pixels;
 	}
 	
+	public String getPath() {
+		return path;
+	}
+	
 	
 	private void load() {
 		try {
@@ -293,6 +349,10 @@ public class SpriteSheet {
 		}
 
 	}
+	
+
+
+
 
 }
 

@@ -1,5 +1,13 @@
 package jogo.graphics;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import jogo.graphics.ui.UIButton;
 
 public class Sprite {
 	
@@ -174,6 +182,11 @@ public class Sprite {
 		System.arraycopy(pixels, 0, this.pixels, 0, pixels.length);
 		
 	}
+	public Sprite(int[] pixels, int width, int height, SpriteSheet sheet) {
+		this(pixels, width, height);
+		this.sheet = sheet;
+	}
+	
 
 
 	private void setColour(int colour) {
@@ -239,7 +252,17 @@ public class Sprite {
 		
 	}
 	
+	public String getPath() {
+		return sheet.getPath();
+	}
 	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
 	private void load() {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -269,6 +292,14 @@ public class Sprite {
 		}
 
 		return sprites;
+	}
+	
+	public BufferedImage getBufferedImage() {
+		BufferedImage image =  new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		int[] _pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
+		System.arraycopy(pixels, 0, _pixels, 0, width * height);
+		return image.getSubimage(getX(), getY(), getWidth(), getHeight());
+		
 	}
 
 	

@@ -1,5 +1,6 @@
 package jogo.entity.mob.player;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -271,8 +272,12 @@ public class Inventory extends Layer {
 				g.setColor(color);
 				g.fillRect(x, y, size.x, size.y);
 
-				if (super.getItem() != null)
+				if (super.getItem() != null) {
 					g.drawImage(super.getItem().getIcom(), x, y, size.x, size.y, null);
+					g.setFont(QuantityFont);
+					g.setColor(Color.BLACK);
+					g.drawString("" + super.getItem().getQuantity(), x + size.x - 20 , y + 13);			
+				}
 			}
 
 			if (inventoryOpen) {
@@ -285,8 +290,13 @@ public class Inventory extends Layer {
 				g.setColor(color);
 				g.fillRect(x, y, size.x, size.y);
 
-				if (super.getItem() != null)
+				if (super.getItem() != null) {
 					g.drawImage(super.getItem().getIcom(), x, y, size.x, size.y, null);
+						g.setFont(QuantityFont);
+						g.setColor(Color.BLACK);
+						g.drawString("" + super.getItem().getQuantity(), x + size.x - 20 , y + 13);			
+					
+				}
 
 			}
 		}

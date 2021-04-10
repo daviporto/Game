@@ -9,7 +9,13 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+
+import jogo.entity.mob.player.PlayerAbilities;
+import jogo.graphics.Sprite;
 import jogo.input.Mouse;
 import jogo.util.Vector2i;
 
@@ -25,6 +31,18 @@ public class UIButton extends UIComponent {
 	private boolean pressed = false;
 	private boolean ignorePressed = false;
 	private boolean ignoreAction = false;
+	
+	public static BufferedImage ERRORIMAGE;
+	
+	static{
+		try {
+			ERRORIMAGE = ImageIO.read(PlayerAbilities.class.getResource("/buttons/error.png"));
+		} catch (IOException e) {
+			System.err.println("unable to load errorImage");
+			System.exit(0);
+		}
+	}
+	
 
 	public UIButton(Vector2i position, Vector2i size, UIActionListener actionListener) {
 		super(position, size);
@@ -67,6 +85,12 @@ public class UIButton extends UIComponent {
 		setImage(image);
 		init();
 	}
+	
+	public UIButton (Vector2i position, Sprite sprite) {
+			this(position, sprite.getBufferedImage());
+	}
+	
+
 	
 	private void init() {
 		setColor(0xaaaaaa);
@@ -154,7 +178,7 @@ public class UIButton extends UIComponent {
 		int x = position.x + offset.x;
 		int y = position.y + offset.y;
 		if (image != null) {
-			g.drawImage(image, x, y, null);
+			g.drawImage(image, x, y, size.getX(), size.getY(),  null);
 		} else {
 			g.setColor(color);
 			g.fillRect(x, y, size.x, size.y);

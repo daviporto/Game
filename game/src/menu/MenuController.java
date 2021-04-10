@@ -6,12 +6,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
+import components.Arrays.booleanArray;
 import jogo.Game;
 import jogo.audio.AudioClip;
 import jogo.graphics.ui.UIButton;
 import jogo.graphics.ui.UIManager;
 import jogo.graphics.ui.UIPanel;
 import jogo.util.Vector2i;
+import menu.newGame.ChoseYourName;
 
 public class MenuController {
 	private MenuFrame menuFrame;
@@ -20,6 +22,7 @@ public class MenuController {
 
 	private final MainMenuPanel mainMenuPanel;
 	private final ControlsMenuPanel controlsMenuPanel;
+	private final ChoseYourName choseYourName;
 	private UIPanel currentPanel;
 	private final DeadMenuPanel deadMenuPanel;
 
@@ -33,8 +36,10 @@ public class MenuController {
 		mainMenuPanel = new MainMenuPanel(this);
 		controlsMenuPanel = new ControlsMenuPanel(this);
 		deadMenuPanel = new DeadMenuPanel(this);
+		choseYourName = new ChoseYourName(this);
 		menuFrame = new MenuFrame(70);
 		currentPanel = mainMenuPanel;
+//		currentPanel = choseYourName;
 //		currentPanel = deadMenuPanel;
 		addPanel(currentPanel);
 	}
@@ -55,10 +60,20 @@ public class MenuController {
 	}
 
 	public void newGame() {
-		AudioClip.buttonClick.play();
-		game.newGame();
+		uiManager.removePanel(currentPanel);
+		currentPanel = choseYourName;
+		addPanel(currentPanel);
+//		AudioClip.buttonClick.play();
 	}
 
+	public void newGame(int skinIdentifier, String name) {
+		if (name == null || name.isEmpty()) name = "bourdieu";
+		uiManager.removePanel(currentPanel);
+		currentPanel = mainMenuPanel;
+		addPanel(currentPanel);
+		game.newGame(skinIdentifier, name);
+//		AudioClip.buttonClick.play();
+	}
 	public void load() {
 		AudioClip.buttonClick.play();
 		game.load();

@@ -2,6 +2,7 @@ package jogo.graphics.ui;
 
 import static jogo.util.ColorUtils.getColor;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import jogo.entity.mob.player.Item;
@@ -15,6 +16,7 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 	private Item item;
 	private int keyToListen;
 	private UILabel numberToBeRendered = null;
+	public static final Font QuantityFont = new Font("sans serif", Font.PLAIN, 15);
 
 	public UIInventoryCell(Vector2i position, Vector2i size, int id) {
 		super(position, size);
@@ -62,8 +64,12 @@ public class UIInventoryCell extends UIComponent implements Cloneable {
 		g.setColor(color);
 		g.fillRect(x, y, size.x, size.y);
 		
-		if (item != null)
+		if (item != null) {
 			g.drawImage(item.getIcom(), x, y, size.x, size.y, null);
+			g.setFont(QuantityFont);
+			g.setColor(Color.BLACK);
+			g.drawString("" + item.getQuantity(), x + size.x - 20 , y + 13);			
+		}
 		
 		if (numberToBeRendered != null)
 			numberToBeRendered.render(g);

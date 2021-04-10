@@ -60,6 +60,7 @@ public class Player extends Mob implements EventListener {
 	private int manaRecoverPerSecond, lifeRecoverPerSecond;
 	private int healing, healingRate;
 	private int recoveringMana, recoveringManaRate;
+	private int skinIdentifier = 1;
 	private boolean shooting = false;
 	private boolean choosingNextLevel = false;
 	private boolean choosingNewAbility = false;
@@ -74,12 +75,12 @@ public class Player extends Mob implements EventListener {
 	private String textAndLevel;
 	private boolean map = false;
 
-	private KindofProjectile currentAbility = null;
+	private KindofProjectile currentAbility = KindofProjectile.NULL;
 
-	private AnimatedSprite down = new AnimatedSprite(SpriteSheet.player_down, 32, 32, 3);
-	private AnimatedSprite up = new AnimatedSprite(SpriteSheet.player_up, 32, 32, 3);
-	private AnimatedSprite left = new AnimatedSprite(SpriteSheet.player_left, 32, 32, 3);
-	private AnimatedSprite right = new AnimatedSprite(SpriteSheet.player_right, 32, 32, 3);
+	private AnimatedSprite down ;
+	private AnimatedSprite up;
+	private AnimatedSprite left ;
+	private AnimatedSprite right;
 	private AnimatedSprite animSprite = down;
 
 	private UIManager ui;
@@ -91,6 +92,7 @@ public class Player extends Mob implements EventListener {
 	private UILabel manaLabel;
 	private UILabel hpLabel;
 	private Inventory inventory;
+	private UILabel nameLabel;
 
 	private BufferedImage image;
 	UIPanel panel = (UIPanel) new UIPanel(new Vector2i((280) * 3, 0), new Vector2i(80 * 3, 168 * 3)).setColor(0x4f4f4f);
@@ -133,12 +135,14 @@ public class Player extends Mob implements EventListener {
 		playerAbilities.drawHablities();
 		upgradeAbility = new UpgradeAbility(ui);
 		inventory = new Inventory(ui, this);
+		setSking(skinIdentifier);
 	}
 
 	public DSObject save() {
 		DSObject o = new DSObject("player");
 		o.pushString(new DSString("playerName", name));
 		super.save(o);
+		o.pushField(new FieldInt("skin Identifier", skinIdentifier));
 		o.pushField(new FieldInt("PLayerLevel", PLayerLevel));
 		o.pushField(new FieldInt("xp", xp));
 		o.pushField(new FieldByte("currentAbility", KindofProjectile.getByte(currentAbility)));
@@ -151,8 +155,9 @@ public class Player extends Mob implements EventListener {
 		o.pushField(new FieldBoolean("choosingNextLevel", choosingNextLevel));
 		o.pushField(new FieldBoolean("choosingNewAbility", choosingNewAbility));
 		o.pushField(new FieldBoolean("blockShooting", blockShooting));
-//		upgradeAbility.save(o);
 		inventory.save(o);
+		upgradeAbility.save(o);
+	
 		return o;
 	}
 
@@ -168,6 +173,7 @@ public class Player extends Mob implements EventListener {
 		player.burning = o.popField().getInt();
 		player.freezening = o.popField().getInt();
 		player.poisoned = o.popField().getInt();
+		player.setSking(o.popField().getInt());
 		player.PLayerLevel = o.popField().getInt();
 		player.xp = o.popField().getInt();
 		player.currentAbility = KindofProjectile.getKind(o.popField().getByte());
@@ -187,30 +193,11 @@ public class Player extends Mob implements EventListener {
 		player.playerAbilities = new PlayerAbilities(player.ui, player.currentAbility);
 		player.upgradeAbility = new UpgradeAbility(player.ui);
 		player.playerAbilities.drawHablities();
-//		Logger.getGlobal().info("" + o.popField().getInt());
 		player.inventory = Inventory.load(o, player.ui, player);
+		player.upgradeAbility.load(o);
 		return player;
 	}
-
-	public String getNmae() {
-		return name;
-	}
-
-	public void setUIManager(UIManager ui) {
-		this.ui = ui;
-	}
 	
-	public Inventory getInventory() {
-		return inventory;
-	}
-
-	public int getMana() {
-		return currentMana;
-	}
-
-	public int getManaMaxima() {
-		return maxMana;
-	}
 
 	public void setMana(int mana) {
 		currentMana = mana;
@@ -291,7 +278,7 @@ public class Player extends Mob implements EventListener {
 	}
 
 	private void abilityShooting() {
-		if (fireRate <= 0 && currentMana >= WizardProjectile.MANA_COST && currentAbility != null) {
+		if (fireRate <= 0 && currentMana >= WizardProjectile.MANA_COST && currentAbility != KindofProjectile.NULL) {
 			double dx = Mouse.getX() - Game.getwindoewidth() / 2;
 			double dy = Mouse.getY() - Game.getwindowheight() / 2;
 			double direction = Math.atan2(dy, dx);
@@ -331,11 +318,11 @@ public class Player extends Mob implements EventListener {
 		else
 			anim = 0;
 
-		if (Keyboard.presed(Keyboard.fireAbility))
+		if (Keyboard.presed(Keyboard.fireAbility) && playerAbilities.getAbilityIfUnlocked(0))
 			currentAbility = KindofProjectile.FIREBOOL;
-		else if (Keyboard.presed(Keyboard.iceAbility))
+		else if (Keyboard.presed(Keyboard.iceAbility) && playerAbilities.getAbilityIfUnlocked(1))
 			currentAbility = KindofProjectile.ICEBOOL;
-		else if (Keyboard.presed(Keyboard.poisoneAbility))
+		else if (Keyboard.presed(Keyboard.poisoneAbility) && playerAbilities.getAbilityIfUnlocked(2))
 			currentAbility = KindofProjectile.POISONBOOL;
 
 		if (Keyboard.presed(Keyboard.foward)) {
@@ -543,7 +530,7 @@ public class Player extends Mob implements EventListener {
 
 	public void createUIConponents() {
 		ui.addPanel(panel);
-		UILabel nameLabel = new UILabel(new Vector2i(40, 30), name);
+		nameLabel = new UILabel(new Vector2i(40, 30), name);
 		nameLabel.setColor(0xbbbbbb);
 		nameLabel.setFont(new Font("Verdana", Font.PLAIN, 24));
 		nameLabel.dropShadow = true;
@@ -614,4 +601,99 @@ public class Player extends Mob implements EventListener {
 	public boolean getMap() {
 		return map;
 	}
+	
+	public void setSking(int identifier) {
+		switch (identifier) {
+		case 1:
+			down = new AnimatedSprite(SpriteSheet.player1[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player1[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player1[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player1[3], 32, 32, 3);
+			break;
+			
+		case 2:
+			down = new AnimatedSprite(SpriteSheet.player2[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player2[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player2[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player2[3], 32, 32, 3);
+			break;
+			
+		case 3:
+			down = new AnimatedSprite(SpriteSheet.player3[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player3[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player3[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player3[3], 32, 32, 3);
+			break;
+			
+		case 4:
+			down = new AnimatedSprite(SpriteSheet.player4[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player4[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player4[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player4[3], 32, 32, 3);
+			break;
+			
+		case 5:
+			down = new AnimatedSprite(SpriteSheet.player5[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player5[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player5[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player5[3], 32, 32, 3);
+			break;
+			
+		case 6:
+			down = new AnimatedSprite(SpriteSheet.player6[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player6[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player6[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player6[3], 32, 32, 3);
+			break;
+			
+		case 7:
+			down = new AnimatedSprite(SpriteSheet.player7[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player7[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player7[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player7[3], 32, 32, 3);
+			break;
+			
+		case 8:
+			down = new AnimatedSprite(SpriteSheet.player8[0], 32, 32, 3);
+			up = new AnimatedSprite(SpriteSheet.player8[1], 32, 32, 3);
+			left = new AnimatedSprite(SpriteSheet.player8[2], 32, 32, 3);
+			right = new AnimatedSprite(SpriteSheet.player8[3], 32, 32, 3);
+			break;
+
+		default:
+			break;
+		}
+		 animSprite = down;
+	}
+	
+	
+
+	public String getNmae() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		if (name == null || name == "")
+			name = "bourdieu";
+		Logger.getGlobal().info(name);
+		this.name = name;
+		nameLabel.SetText(name);
+	}
+
+	public void setUIManager(UIManager ui) {
+		this.ui = ui;
+	}
+	
+	public Inventory getInventory() {
+		return inventory;
+	}
+
+	public int getMana() {
+		return currentMana;
+	}
+
+	public int getManaMaxima() {
+		return maxMana;
+	}
+
 }

@@ -15,23 +15,28 @@ public class Vector2i {
 	public Vector2i(Vector2i vector) {
 		set(vector.x, vector.y);
 	}
-	
-	public Vector2i (MousePressedEvent e) {
+
+	public Vector2i(MousePressedEvent e) {
 		set(e.getX(), e.getY());
 	}
-	
 
 	public Vector2i(int x, int y) {
 		set(x, y);
 	}
+
 	public Vector2i sumAndNew(Vector2i b) {
 		Vector2i result = new Vector2i(this);
 		return result.add(b);
 	}
-	
+
 	public Vector2i subtractAndNew(Vector2i b) {
 		Vector2i result = new Vector2i(this);
 		return result.subtract(b);
+	}
+
+	public void multiply(int scale) {
+		this.x *= scale;
+		this.y *= scale;
 	}
 
 	public void set(int x, int y) {
@@ -52,7 +57,7 @@ public class Vector2i {
 		this.y += vector.y;
 		return this;
 	}
-	
+
 	public Vector2i add(int value) {
 		this.x += value;
 		this.y += value;
@@ -82,9 +87,11 @@ public class Vector2i {
 	}
 
 	public boolean equals(Object object) {
-		if (!(object instanceof Vector2i)) return false;
+		if (!(object instanceof Vector2i))
+			return false;
 		Vector2i vec = (Vector2i) object;
-		if (vec.getX() == this.getX() && vec.getY() == this.getY()) return true;
+		if (vec.getX() == this.getX() && vec.getY() == this.getY())
+			return true;
 		return false;
 	}
 }

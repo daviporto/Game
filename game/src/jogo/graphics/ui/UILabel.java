@@ -54,7 +54,7 @@ public class UILabel extends UIComponent {
 			g.setColor(Color.BLACK);
 			g.drawString(text, position.x + offset.x + dropShadowOffset, position.y + offset.y + dropShadowOffset);
 		}
-
+		
 		g.setColor(foregroundColor);
 		g.setFont(font);
 		g.drawString(text, position.x + offset.x, position.y + offset.y);
@@ -70,6 +70,18 @@ public class UILabel extends UIComponent {
 
 	public String getText() {
 		return text;
+	}
+	
+	public void SetText(String text) {
+		this.text = text;
+	}
+	
+	public void appendText(String text) {
+		this.text += text;
+	}
+	
+	public int textLenght() {
+		return text.length();
 	}
 
 	public void blink() {

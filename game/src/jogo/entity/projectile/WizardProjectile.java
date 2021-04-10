@@ -21,7 +21,8 @@ public class WizardProjectile extends Projectile{
 		range = random.nextInt(100) + 150;
 		speed = 4;
 		damage = 20;
-//		sprite = Sprite.rotate(Sprite.default_blue, angle - 90);
+		sprite = Sprite.green_bool;
+		sprite.rotate(Sprite.green_bool, direction  - 90);
 		
 		nx = speed * Math.cos(angle);
 		ny = speed * Math.sin(angle);

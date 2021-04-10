@@ -92,6 +92,10 @@ public class UpgradeAbility {
 	public void save(DSObject o) {
 		o.pushArray(new intArray("abilities level", currentLevelAbilities));
 	}
+	
+	public void load (DSObject o) {
+		currentLevelAbilities = o.popArray().dataInt;
+	}
 
 	public void removeButton(int button) {
 		if (button == 0)

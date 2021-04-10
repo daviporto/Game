@@ -21,6 +21,7 @@ import jogo.events.Event;
 import jogo.events.playerEvents.PlayerEventsManager;
 import jogo.graphics.Font;
 import jogo.graphics.Screen;
+import jogo.graphics.SpriteSheet;
 import jogo.graphics.layers.Layer;
 import jogo.graphics.ui.UIManager;
 import jogo.input.Keyboard;
@@ -111,8 +112,10 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 		level.setMenuController(menuController);
 	}
 
-	public void newGame() {
+	public void newGame(int skintIdentifier, String name) {
 		reset();
+		player.setSking(skintIdentifier);
+		player.setName(name);
 		pause = false;
 	}
 
@@ -158,13 +161,13 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 		level.pushField(new FieldShort("levelID", levelID));
 		db.pushObject(level);
-//		db.enableDebbug();
+		db.enableDebbug();
 		db.serializeToFile("saves/save");
 	}
 
 	public void load() {
 		DSDataBase db = DSDataBase.deserializeFromFile("saves/save");
-//		db.enableDebbug();
+		db.enableDebbug();
 		DSObject o = db.getAndRemoveObject("level");
 		short levelID = o.popField().getShort();
 		if (levelID == 0)
@@ -287,11 +290,9 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 
 		Graphics g = bs.getDrawGraphics();
 		// Render layers here
-//		screen.renderSheet(0, 0, SpriteSheet.famaleVampire, false);
 //		Logger.getGlobal().info(SpriteSheet.witch.toString());
 //		font.render(0, 0,0x000000, "123456789", screen);
-//		final Sprite[] sprites = SpriteSheet.witch_down.getSprite();
-//		screen.renderSprite(130, 0, Sprite.green_bool, false);
+//		screen.renderSheet(0, 0, SpriteSheet.player2[0], true);
 //		screen.renderSprite(160, 0, sprites[2], false);
 //		screen.renderSprite(190, 0, sprites[3], false);
 //		for (int i = 0; i < pixels.length; i++) {
@@ -305,6 +306,7 @@ public class Game extends Canvas implements Runnable, jogo.events.EventListener 
 			for (int i = 0; i < layerStack.size(); i++) {
 				layerStack.get(i).render(screen);
 			}
+//			screen.renderSheet(10,10, SpriteSheet.player5[0], false);
 			g.drawImage(image, 0, 0, width * scale, height * scale, null);
 			uiManager.render(g);
 			g.drawImage(level.getMiniMapImage(), width * scale, height * scale - 200, 240, 200, null);

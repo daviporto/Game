@@ -51,10 +51,10 @@ public class AudioClip {
 	}
 
 	public void play() {
-		pause();
-		clip.setFramePosition(0);
-		clip.start();
-		active = true;
+//		pause();
+//		clip.setFramePosition(0);
+//		clip.start();
+//		active = true;
 
 	}
 

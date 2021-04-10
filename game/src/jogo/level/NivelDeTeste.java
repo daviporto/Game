@@ -16,6 +16,7 @@ import jogo.events.checkPoints.SaveCheckPoint;
 import jogo.events.playerEvents.LevelTrigered;
 import jogo.events.playerEvents.LocationTrigered;
 import jogo.graphics.Screen;
+import jogo.graphics.SpriteSheet;
 import jogo.graphics.ui.UITextandNext;
 import jogo.util.Vector2i;
 import menu.MenuController;
@@ -141,6 +142,7 @@ public class NivelDeTeste extends Level {
 
 	public void RenderCenario(Screen screen) {
 //		screen.renderSprite(1015, 432, Sprite.poison_cauldron, true);
+
 	}
 
 }

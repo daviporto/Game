@@ -45,9 +45,11 @@ public abstract class Mob extends Entity {
 	}
 
 	public enum KindofProjectile {
-		WIZZARD, FIREBOOL, ICEBOOL, POISONBOOL, RANDOMBOOL, BASIC, GREENBALL;
+		WIZZARD, FIREBOOL, ICEBOOL, POISONBOOL, RANDOMBOOL, BASIC, GREENBALL, NULL;
 
 		public static byte getByte(KindofProjectile k) {
+			if (k == NULL)
+				return -1;
 			if (k == WIZZARD)
 				return 0;
 			if (k == FIREBOOL)
@@ -68,6 +70,8 @@ public abstract class Mob extends Entity {
 
 		public static KindofProjectile getKind(byte b) {
 			switch (b) {
+			case -1:
+				return NULL;
 			case 0:
 				return WIZZARD;
 			case 1:
@@ -176,7 +180,7 @@ public abstract class Mob extends Entity {
 		else if (kind == KindofProjectile.GREENBALL)
 			p = new UnmovingShooterProjectile((int) x, (int) y, direction, player);
 
-		else if (p == null) {
+		else if (kind == KindofProjectile.NULL) {
 			p = new WizardProjectile((int) x, (int) y, direction);
 			System.err.println("default projectile loaded");
 		}

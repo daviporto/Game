@@ -60,6 +60,11 @@ public class PlayerAbilities {
 
 		return -1;
 	}
+	
+	public boolean getAbilityIfUnlocked(int ability) {
+		if (getCurrentLevelAbiliti(ability) <= 0) return false;
+		return true;
+	}
 
 	private void catchImages() {
 		try {
